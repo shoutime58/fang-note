@@ -17,16 +17,13 @@
   --gain:#25795C;--loss:#B34437;--mark:#A9781F;--markSoft:#F3E7CE;
   --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
   --sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",system-ui,-apple-system,sans-serif;
-  --safeB:env(safe-area-inset-bottom,0px);
-  --safeT:env(safe-area-inset-top,0px);
+  --safeB:env(safe-area-inset-bottom,0px);--safeT:env(safe-area-inset-top,0px);
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
-body{
-  background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.8;
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.8;
   -webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;
-  padding-bottom:calc(58px + var(--safeB));overscroll-behavior-y:none;
-}
+  padding-bottom:calc(58px + var(--safeB));overscroll-behavior-y:none}
 h1,h2,h3,h4,.serif{font-family:var(--serif);font-weight:600;line-height:1.4;margin:0}
 p{margin:0 0 .9em}
 .num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
@@ -35,7 +32,6 @@ svg{display:block;width:100%;height:auto;overflow:visible}
 .tick{font-size:10px;fill:var(--ink3)}
 .grid{stroke:var(--rule2);stroke-width:1}.zero{stroke:var(--ink3);stroke-width:1}
 
-/* header */
 header{position:sticky;top:0;z-index:30;background:rgba(236,239,238,.95);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule);padding:calc(var(--safeT) + 10px) 16px 10px;
   display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -49,14 +45,12 @@ main{padding:16px 16px 30px;max-width:640px;margin:0 auto}
 h2.sec{font-size:19px;margin:26px 0 4px}
 h2.sec:first-child{margin-top:0}
 .sub{color:var(--ink2);font-size:13px;margin-bottom:12px;line-height:1.7}
-
 .card{background:var(--paper);border:1px solid var(--rule);padding:16px;margin-bottom:12px}
 .card h3{font-size:15.5px;margin-bottom:6px}
 
-/* big estimate */
 .est{background:var(--accent);color:#fff;padding:20px 18px;margin-bottom:12px}
 .est .lab{font-size:11.5px;opacity:.75;line-height:1.5}
-.est .big{font-size:38px;font-family:var(--sans);font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;margin:6px 0 2px}
+.est .big{font-size:38px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;margin:6px 0 2px}
 .est .chg{font-size:16px;font-variant-numeric:tabular-nums}
 .est .note{font-size:11.5px;opacity:.72;line-height:1.6;margin-top:12px;border-top:1px solid rgba(255,255,255,.22);padding-top:10px}
 .est.empty{background:var(--paper);color:var(--ink);border:1px dashed var(--rule)}
@@ -66,8 +60,9 @@ h2.sec:first-child{margin-top:0}
 .kv div{background:var(--paper);padding:12px 14px}
 .kv span{display:block;font-size:11px;color:var(--ink3);line-height:1.5}
 .kv b{font-size:19px;font-variant-numeric:tabular-nums;font-weight:600}
+.kv.k3{grid-template-columns:1fr 1fr 1fr}
+.kv.k3 b{font-size:16px}
 
-/* quote list */
 .q{display:grid;grid-template-columns:62px 1fr auto auto;gap:10px;align-items:center;
   padding:11px 14px;background:var(--paper);border:1px solid var(--rule);border-top:0}
 .q:first-of-type{border-top:1px solid var(--rule)}
@@ -77,15 +72,14 @@ h2.sec:first-child{margin-top:0}
 .q .dp{font-size:13.5px;font-variant-numeric:tabular-nums;text-align:right;font-weight:600;min-width:62px}
 .up{color:var(--gain)}.dn{color:var(--loss)}
 
-.btn{display:block;width:100%;padding:13px;background:var(--accent);color:#fff;border:0;
-  font-size:15px;cursor:pointer;margin-bottom:10px}
+.btn{display:block;width:100%;padding:13px;background:var(--accent);color:#fff;border:0;font-size:15px;cursor:pointer;margin-bottom:10px}
 .btn.sub{background:var(--paper);color:var(--accent);border:1px solid var(--accent)}
+.btn.sm{padding:9px;font-size:13px}
 .btn:disabled{opacity:.5}
 .mstat{font-size:12px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;gap:7px}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--ink3);flex:none}
 .dot.live{background:var(--gain);box-shadow:0 0 0 3px rgba(37,121,92,.18)}
 
-/* terms */
 .t{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;border-bottom:1px dashed var(--mark)}
 .t::after{content:"?";font-size:9px;vertical-align:super;color:var(--mark);margin-left:1px;font-weight:700}
 #pop{position:fixed;left:12px;right:12px;bottom:calc(70px + var(--safeB));background:var(--ink);color:#F3F6F5;
@@ -97,10 +91,8 @@ h2.sec:first-child{margin-top:0}
 #pop p{font-size:13.5px;line-height:1.75;color:#C9D3D0;margin:0}
 #pop .x{position:absolute;top:8px;right:10px;background:none;border:0;color:#7E8B88;font-size:22px;cursor:pointer}
 
-/* companies */
 details.co{background:var(--paper);border:1px solid var(--rule);margin-bottom:8px}
-details.co>summary{list-style:none;cursor:pointer;padding:13px 15px;display:grid;
-  grid-template-columns:58px 1fr auto;gap:10px;align-items:center}
+details.co>summary{list-style:none;cursor:pointer;padding:13px 15px;display:grid;grid-template-columns:58px 1fr auto;gap:10px;align-items:center}
 details.co>summary::-webkit-details-marker{display:none}
 .co .tk{font-weight:700;font-size:14px;letter-spacing:.03em}
 .co .tk small{display:block;font-weight:400;font-size:10px;color:var(--ink3)}
@@ -110,13 +102,12 @@ details.co>summary::-webkit-details-marker{display:none}
 .co .r5 small{display:block;font-size:9.5px;color:var(--ink3);font-weight:400}
 .cob{padding:2px 15px 18px;border-top:1px solid var(--rule2);font-size:13.5px}
 .hz{border-left:2px solid var(--soft);padding:2px 0 2px 12px;margin:13px 0}
-.hz h5{margin:0 0 1px;font-size:12px;font-family:var(--sans);font-weight:700;color:var(--accent)}
+.hz h5{margin:0 0 1px;font-size:12px;font-weight:700;color:var(--accent)}
 .hz p{margin:0;color:var(--ink2);font-size:13.5px}
 .bx{padding:11px 13px;font-size:13px;line-height:1.7;margin-top:10px}
 .bx h6{margin:0 0 3px;font-size:11.5px;font-weight:700}
 .bx.g{background:#E9F2EE;color:#1D4E3D}.bx.b{background:#F7EBE9;color:#7C332A}
 
-/* controls */
 .seg{display:flex;border:1px solid var(--rule);background:var(--paper);margin-bottom:12px;flex-wrap:wrap}
 .seg button{flex:1;font-size:12.5px;padding:8px 4px;background:none;border:0;border-right:1px solid var(--rule);cursor:pointer;color:var(--ink2)}
 .seg button:last-child{border-right:0}
@@ -125,15 +116,16 @@ details.co>summary::-webkit-details-marker{display:none}
 .fld label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
 .fld label b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
 input[type=range]{width:100%;accent-color:var(--accent);height:26px}
-input[type=text],input[type=number],input[type=date]{width:100%;padding:11px 12px;border:1px solid var(--rule);
-  background:#fff;font:inherit;font-size:16px;border-radius:0;-webkit-appearance:none}
+input[type=text],input[type=number],input[type=date],textarea{width:100%;padding:11px 12px;border:1px solid var(--rule);
+  background:#fff;font:inherit;font-size:16px;border-radius:0;-webkit-appearance:none;font-family:var(--sans)}
+textarea{min-height:110px;line-height:1.6;font-size:13px}
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pills button{font-size:12.5px;padding:7px 11px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;color:var(--ink2)}
 .pills button[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#fff}
 .cap{font-size:11.5px;color:var(--ink3);line-height:1.7;margin-top:9px}
 .warn{background:#F7EBE9;border-left:3px solid var(--loss);padding:12px 14px;font-size:12.5px;color:#7C332A;line-height:1.75}
+.info{background:var(--soft);border-left:3px solid var(--accent);padding:12px 14px;font-size:12.5px;color:#123F38;line-height:1.75;margin-bottom:12px}
 
-/* table */
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;font-size:11.5px;min-width:660px;font-variant-numeric:tabular-nums;width:100%}
 th,td{padding:6px 5px;text-align:right;border-bottom:1px solid var(--rule2);white-space:nowrap}
@@ -153,22 +145,36 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
 .glos dt{font-weight:700;font-size:13.5px}
 .glos dd{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.7}
 
-/* tabbar */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(251,252,252,.97);backdrop-filter:blur(10px);border-top:1px solid var(--rule);
-  padding-bottom:var(--safeB)}
-.tabs button{background:none;border:0;padding:8px 2px 7px;cursor:pointer;color:var(--ink3);font-size:10.5px;line-height:1.3}
-.tabs button b{display:block;font-size:17px;font-weight:400;line-height:1.2;margin-bottom:1px}
+/* progress */
+.bar{height:12px;background:var(--rule2);border:1px solid var(--rule);position:relative;overflow:hidden;margin:8px 0 6px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.barlab{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
+
+/* records */
+.rec{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px 13px;
+  background:var(--paper);border:1px solid var(--rule);border-top:0;font-size:13px}
+.rec:first-of-type{border-top:1px solid var(--rule)}
+.rec .d{font-variant-numeric:tabular-nums}
+.rec .d small{display:block;font-size:10.5px;color:var(--ink3)}
+.rec .v{text-align:right;font-variant-numeric:tabular-nums}
+.rec .v small{display:block;font-size:10.5px;color:var(--ink3)}
+.rec .del{background:none;border:1px solid var(--rule);color:var(--ink3);width:26px;height:26px;cursor:pointer;font-size:13px;line-height:1}
+.badge{display:inline-block;font-size:10.5px;padding:1px 7px;background:var(--soft);color:var(--accent);margin-left:5px;font-weight:700}
+.cheer{background:var(--accent);color:#fff;padding:14px 16px;font-size:13.5px;line-height:1.75;margin-bottom:12px}
+.cheer b{font-family:var(--serif);font-size:16px;display:block;margin-bottom:3px}
+
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(5,1fr);
+  background:rgba(251,252,252,.97);backdrop-filter:blur(10px);border-top:1px solid var(--rule);padding-bottom:var(--safeB)}
+.tabs button{background:none;border:0;padding:8px 1px 7px;cursor:pointer;color:var(--ink3);font-size:10px;line-height:1.3}
+.tabs button b{display:block;font-size:16px;font-weight:400;line-height:1.2;margin-bottom:1px}
 .tabs button[aria-pressed=true]{color:var(--accent);font-weight:700}
 
-/* sheet */
 .sheet{position:fixed;inset:0;z-index:70;background:rgba(19,26,25,.45);display:none}
 .sheet.on{display:block}
 .sheet .inner{position:absolute;left:0;right:0;bottom:0;max-height:92%;overflow-y:auto;background:var(--bg);
   padding:18px 16px calc(30px + var(--safeB));max-width:640px;margin:0 auto}
 .sheet h3{font-size:18px;margin-bottom:2px}
 .sheet .lab{font-size:12.5px;color:var(--ink2);margin:16px 0 5px}
-.ok{background:#E9F2EE;color:#1D4E3D;padding:10px 12px;font-size:12.5px;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -180,10 +186,10 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
 
 <main>
 
-<!-- ================= 今日 ================= -->
+<!-- ============ 今日 ============ -->
 <div class="page on" id="p-today">
   <div id="estBox"></div>
-
+  <div id="errBox"></div>
   <div class="kv" id="holdBox"></div>
 
   <div class="mstat"><span class="dot" id="mdot"></span><span id="mtxt">米国市場の状況を確認中</span></div>
@@ -191,15 +197,80 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
   <div id="qhead" hidden style="font-size:11px;color:var(--ink3);display:flex;justify-content:space-between;padding:0 2px 5px">
     <span>構成10社</span><span>株価　／　前日終値比</span></div>
   <div id="quotes"></div>
-  <p class="cap" id="qcap">「株価を更新する」を押すと、10社の最新値を取り込みます。無料プランでは15分ほど遅れる場合があります。</p>
+  <p class="cap" id="qcap">「株価を更新する」を押すと、10社の最新値を取り込みます。</p>
 
   <div class="card" style="margin-top:16px">
-    <h3>推定のしくみ</h3>
-    <p style="font-size:13px;color:var(--ink2);margin:0">FANG+は10社を10%ずつ持つ<button class="t" data-k="equal">等ウェイト</button>なので、10社の騰落率を単純平均すれば指数の動きにほぼ一致します。それに<button class="t" data-k="fx">為替</button>の変動を掛けて、前回の<button class="t" data-k="kijun">基準価額</button>から次の値を推定しています。目安であって、公表値とは数字がずれます。</p>
+    <h3>これは推定値です</h3>
+    <p style="font-size:13px;color:var(--ink2);margin:0 0 10px">FANG+は10社を10%ずつ持つ<button class="t" data-k="equal">等ウェイト</button>なので、10社の騰落率を平均すれば指数の動きにほぼ一致します。それに<button class="t" data-k="fx">為替</button>の変動を掛けて、前回の<button class="t" data-k="kijun">基準価額</button>から次の値を推定しています。</p>
+    <p style="font-size:13px;color:var(--ink2);margin:0"><b>確定値が出る時刻</b>：運用会社が夕方に算出し、証券会社のアプリには夜21時30分ごろ反映されます。それより早く確定値が出ることはありません。夜に確定値を見たら、⚙から起点を入れ直してください。ずれの記録が残り、自分のズレの癖が見えてきます。</p>
   </div>
 </div>
 
-<!-- ================= 10社 ================= -->
+<!-- ============ あゆみ ============ -->
+<div class="page" id="p-log">
+  <div id="cheer"></div>
+
+  <div class="kv k3">
+    <div><span>累計の投資額</span><b class="num" id="lCost">—</b></div>
+    <div><span>いまの評価額</span><b class="num" id="lVal" style="color:var(--accent)">—</b></div>
+    <div><span>損益</span><b class="num" id="lPL">—</b></div>
+  </div>
+
+  <div class="card">
+    <h3>目標までの道のり</h3>
+    <div class="bar"><i id="gBar" style="width:0%"></i></div>
+    <div class="barlab"><span id="gNow">—</span><span id="gGoal">—</span></div>
+    <p class="cap" id="gCap" style="margin-top:8px"></p>
+  </div>
+
+  <div class="card">
+    <h3>積立の推移</h3>
+    <div id="logChart"></div>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--ink2);margin-top:8px">
+      <span><i style="display:inline-block;width:14px;height:3px;background:var(--accent);vertical-align:middle;margin-right:5px"></i>評価額</span>
+      <span><i style="display:inline-block;width:14px;height:3px;background:var(--ink3);vertical-align:middle;margin-right:5px"></i>投資した元本</span>
+    </div>
+    <p class="cap" id="logCap"></p>
+  </div>
+
+  <div class="kv k3">
+    <div><span>平均取得単価</span><b class="num" id="lAvg">—</b></div>
+    <div><span>いまの基準価額</span><b class="num" id="lNav">—</b></div>
+    <div><span>積立の回数</span><b class="num" id="lCnt">—</b></div>
+  </div>
+
+  <div class="card" id="statCard">
+    <h3>買い方の記録</h3>
+    <div id="statBody" style="font-size:13.5px;color:var(--ink2)"></div>
+  </div>
+
+  <h2 class="sec">記録を追加する</h2>
+  <p class="sub">証券会社の「取引履歴」に、約定日・約定金額・約定時の基準価額が載っています。口数は自動で計算します。</p>
+  <div class="card">
+    <div class="fld"><label for="rDate">約定日</label><input type="date" id="rDate"></div>
+    <div class="fld"><label for="rAmt">買付金額（円）</label><input type="number" id="rAmt" inputmode="numeric" placeholder="例）50000"></div>
+    <div class="fld"><label for="rNav">その日の基準価額（円）</label><input type="number" id="rNav" inputmode="decimal" placeholder="例）45230"></div>
+    <button class="btn" id="addRec">この1件を追加する</button>
+  </div>
+
+  <details class="card" style="padding:0">
+    <summary style="padding:14px 16px;cursor:pointer;font-family:var(--serif);font-size:15.5px">まとめて入力・書き出し</summary>
+    <div style="padding:0 16px 16px">
+      <p class="cap" style="margin-top:0">1行に1件、<code>日付,金額,基準価額</code> の順でカンマ区切りにして貼り付けてください。</p>
+      <textarea id="bulk" placeholder="2024-04-15,50000,45230&#10;2024-05-15,50000,47100&#10;2024-06-17,50000,46880"></textarea>
+      <button class="btn sm" id="addBulk" style="margin-top:8px">まとめて追加する</button>
+      <p class="cap">機種変更などに備えて、下のボタンで記録を文字列として書き出せます。メモアプリに保存しておくと安心です。</p>
+      <button class="btn sub sm" id="expBtn">記録を書き出す</button>
+      <button class="btn sub sm" id="impBtn">上の欄から読み込む</button>
+    </div>
+  </details>
+
+  <h2 class="sec">これまでの記録</h2>
+  <div id="recList"></div>
+  <p class="cap" id="recCap"></p>
+</div>
+
+<!-- ============ 10社 ============ -->
 <div class="page" id="p-stocks">
   <h2 class="sec">10社の現在地</h2>
   <p class="sub">タップで展開します。短期・中期・長期で何を見ればいいかを分けて書いています。</p>
@@ -207,12 +278,15 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
   <p class="cap">「5年平均」は2021〜2025年の年平均リターン（米ドルベース）。同期間のFANG+指数は+20.2%でした。数値は2026年前半までの公表資料にもとづく整理です。</p>
 </div>
 
-<!-- ================= 試算 ================= -->
+<!-- ============ 試算 ============ -->
 <div class="page" id="p-sim">
   <h2 class="sec">これから何年か、を試算する</h2>
   <p class="sub">将来の予測ではなく「この前提ならこうなる」を確かめる道具です。</p>
-  <div class="fld"><label for="init">はじめに入れる金額<b><span id="initV">0</span>万円</b></label><input type="range" id="init" min="0" max="500" step="10" value="0"></div>
-  <div class="fld"><label for="mon">毎月の積立額<b><span id="monV">3</span>万円</b></label><input type="range" id="mon" min="0" max="20" step="0.5" value="3"></div>
+  <div class="fld"><label for="init">はじめに入れる金額<b><span id="initV">0</span>万円</b></label><input type="range" id="init" min="0" max="1800" step="5" value="0"></div>
+  <div class="fld"><label for="mon">毎月の積立額<b><span id="monV">3.0</span>万円</b></label><input type="range" id="mon" min="0" max="30" step="0.5" value="3"></div>
+  <div class="fld"><label for="cap">積立をやめる累計額<b><span id="capV">上限なし</span></b></label><input type="range" id="cap" min="0" max="1800" step="10" value="0"></div>
+  <div class="fld"><label>上限に達したあと</label>
+    <div class="pills" id="capMode"><button data-m="stop" aria-pressed="true">積立をやめて持ち続ける</button><button data-m="go">上限を超えても続ける</button></div></div>
   <div class="fld"><label for="yrs">保有する年数<b><span id="yrsV">10</span>年</b></label><input type="range" id="yrs" min="1" max="30" step="1" value="10"></div>
   <div class="fld"><label>想定する年率リターン（<button class="t" data-k="fukuri">複利</button>）</label>
     <div class="pills" id="scen"><button data-r="5">慎重 5%</button><button data-r="10" aria-pressed="true">標準 10%</button><button data-r="15">強気 15%</button><button data-r="27.8">過去並み 27.8%</button></div></div>
@@ -223,6 +297,7 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
   <div class="fld"><label>口座</label>
     <div class="pills" id="acctp"><button data-a="nisa" aria-pressed="true">NISA</button><button data-a="tax">課税 20.315%</button></div></div>
 
+  <div class="info" id="capInfo" hidden></div>
   <div class="kv" style="margin-top:16px">
     <div><span>投資した元本</span><b class="num" id="rPrin">—</b></div>
     <div><span>最終の評価額</span><b class="num" id="rVal" style="color:var(--accent)">—</b></div>
@@ -236,7 +311,7 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
   <p class="sub">2018年1月〜2025年12月。実際の年別リターンを月割りにし、信託報酬0.7755%を引いた試算です（為替の影響は含みません）。</p>
   <div class="seg" id="bAmtSeg">
     <button data-a="10000">月1万</button><button data-a="30000" aria-pressed="true">月3万</button>
-    <button data-a="50000">月5万</button><button data-a="100000">月10万</button>
+    <button data-a="50000">月5万</button><button data-a="150000">月15万</button>
   </div>
   <div class="kv">
     <div><span>投資した元本</span><b class="num" id="bPrin">—</b></div>
@@ -248,12 +323,12 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
   <p class="cap">2022年、この積立は一時的に元本割れしています。そこで売っていたら、翌2023年の+95.6%を受け取れませんでした。<button class="t" data-k="dca">ドルコスト平均法</button></p></div>
 </div>
 
-<!-- ================= 学ぶ ================= -->
+<!-- ============ 学ぶ ============ -->
 <div class="page" id="p-learn">
   <h2 class="sec">値動きの歴史</h2>
   <p class="sub">2017年末を100とした指数の推移。表示を変えると見え方が変わります。</p>
   <div class="seg" id="gSeg"><button data-g="linear" aria-pressed="true">ふつう</button><button data-g="log">対数</button><button data-g="dd">下落率</button></div>
-  <div class="card"><div id="growthChart"></div><p class="cap" id="gCap"></p></div>
+  <div class="card"><div id="growthChart"></div><p class="cap" id="gcap2"></p></div>
   <div class="card"><div id="heroChart"></div><p class="cap">年別リターン（米ドルベース）。8年平均は+27.8%ですが、平均どおりの年は一度もありません。</p></div>
 
   <h2 class="sec">年別ヒートマップ</h2>
@@ -295,6 +370,7 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
 
 <nav class="tabs">
   <button data-p="today" aria-pressed="true"><b>◉</b>今日</button>
+  <button data-p="log"><b>◈</b>あゆみ</button>
   <button data-p="stocks"><b>▤</b>10社</button>
   <button data-p="sim"><b>◪</b>試算</button>
   <button data-p="learn"><b>✦</b>学ぶ</button>
@@ -302,26 +378,28 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
 
 <div id="pop" role="dialog"><button class="x" id="popX" aria-label="閉じる">×</button><h4 id="popT"></h4><p id="popB"></p></div>
 
-<!-- ================= 設定 ================= -->
 <div class="sheet" id="setSheet">
   <div class="inner">
     <h3>設定</h3>
     <p class="cap" style="margin-top:2px">入力した内容はこのiPhoneの中だけに保存されます。どこにも送信されません。</p>
 
-    <p class="lab">① Finnhub の APIキー<br><span style="color:var(--ink3)">finnhub.io で無料登録するともらえる文字列。株価の取得に使います。</span></p>
+    <p class="lab">① Finnhub の APIキー<br><span style="color:var(--ink3)">finnhub.io で無料登録するともらえる文字列。</span></p>
     <input type="text" id="sKey" placeholder="例）cq1abc2def3ghi4jkl" autocapitalize="off" autocorrect="off" spellcheck="false">
 
-    <p class="lab">② 最後に確認した基準価額（円）<br><span style="color:var(--ink3)">証券会社アプリに出ている数字。これを起点に推定します。</span></p>
-    <input type="number" id="sBase" placeholder="例）100057" inputmode="decimal">
+    <p class="lab">② 最後に確認した基準価額（円）<br><span style="color:var(--ink3)">夜21時30分以降に証券会社アプリで確認した確定値を入れてください。</span></p>
+    <input type="number" id="sBase" placeholder="例）99147" inputmode="decimal">
 
     <p class="lab">③ そのときの為替（1ドル＝◯円）<br><span style="color:var(--ink3)">空欄なら自動取得した値を使います。</span></p>
     <input type="number" id="sFx" placeholder="例）152.3" inputmode="decimal">
 
-    <p class="lab">④ 保有口数（口）<br><span style="color:var(--ink3)">証券会社アプリの「保有口数」。空欄なら評価額は表示しません。</span></p>
+    <p class="lab">④ 積立の目標額（円）<br><span style="color:var(--ink3)">「あゆみ」タブの進捗バーに使います。</span></p>
+    <input type="number" id="sGoal" placeholder="例）7200000" inputmode="numeric">
+
+    <p class="lab">⑤ 保有口数（口）<br><span style="color:var(--ink3)">「あゆみ」に記録があれば自動計算するので、空欄で構いません。</span></p>
     <input type="number" id="sUnits" placeholder="例）1234567" inputmode="numeric">
 
-    <p class="lab">⑤ 取得金額の合計（円）<br><span style="color:var(--ink3)">これまでに投資した合計。損益の計算に使います。</span></p>
-    <input type="number" id="sCost" placeholder="例）1200000" inputmode="numeric">
+    <p class="lab">⑥ 取得金額の合計（円）<br><span style="color:var(--ink3)">同上。記録があれば自動で計算します。</span></p>
+    <input type="number" id="sCost" placeholder="例）2650000" inputmode="numeric">
 
     <button class="btn" id="saveSet" style="margin-top:20px">保存する</button>
     <button class="btn sub" id="closeSet">閉じる</button>
@@ -426,10 +504,13 @@ nisa:["NISA","運用益に税金がかからない制度。通常は利益に20.
 
 /* ===================== STORE ===================== */
 const KEY='fangnote.v1';
-let ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,lastQuotes:null,lastAt:''};
+let ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,goal:7200000,
+        recs:[],lastQuotes:null,lastFx:null,lastAt:'',lastEst:null,errs:[]};
 function load(){try{const s=localStorage.getItem(KEY);if(s)ST=Object.assign(ST,JSON.parse(s));}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}}
 load();
+if(!Array.isArray(ST.recs))ST.recs=[];
+if(!Array.isArray(ST.errs))ST.errs=[];
 
 /* ===================== HELPERS ===================== */
 const NS='http://www.w3.org/2000/svg';
@@ -439,6 +520,7 @@ const txt=(x,y,s,c,an,f)=>{const t=el('text',{x,y,class:c||'tick','text-anchor':
 const yen=n=>'¥'+Math.round(n).toLocaleString('ja-JP');
 const man=n=>{const m=n/10000;return Math.abs(m)>=10000?(m/10000).toFixed(2)+'億円':Math.round(m).toLocaleString('ja-JP')+'万円';};
 const sign=v=>(v>0?'+':'')+v.toFixed(2);
+const jdate=s=>{const d=new Date(s+'T00:00:00');return isNaN(d)?null:d;};
 
 /* ===================== TABS ===================== */
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
@@ -447,6 +529,7 @@ document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
   document.getElementById('p-'+b.dataset.p).classList.add('on');
   window.scrollTo(0,0);
+  if(b.dataset.p==='log')renderLog();
 });
 
 /* ===================== TERM POPOVER ===================== */
@@ -463,54 +546,58 @@ document.getElementById('glos').innerHTML=Object.values(GLOS).map(([t,d])=>`<div
 const sheet=document.getElementById('setSheet');
 function fillSet(){
   sKey.value=ST.apiKey||'';sBase.value=ST.base??'';sFx.value=ST.baseFx??'';
-  sUnits.value=ST.units??'';sCost.value=ST.cost??'';
+  sGoal.value=ST.goal??'';sUnits.value=ST.units??'';sCost.value=ST.cost??'';
 }
 openSet.onclick=()=>{fillSet();sheet.classList.add('on');};
 closeSet.onclick=()=>sheet.classList.remove('on');
 sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('on');};
 saveSet.onclick=()=>{
+  const nb=sBase.value?+sBase.value:null;
+  // 推定と確定のずれを記録
+  if(nb&&ST.lastEst&&nb!==ST.base){
+    const err=(nb/ST.lastEst-1)*100;
+    ST.errs.unshift({d:new Date().toLocaleDateString('ja-JP'),est:Math.round(ST.lastEst),act:nb,err:+err.toFixed(2)});
+    ST.errs=ST.errs.slice(0,10);
+  }
   ST.apiKey=sKey.value.trim();
-  ST.base=sBase.value?+sBase.value:null;
-  ST.baseFx=sFx.value?+sFx.value:ST.baseFx;
+  if(nb&&nb!==ST.base){ST.base=nb;ST.baseAt=new Date().toLocaleDateString('ja-JP');ST.baseFx=sFx.value?+sFx.value:(ST.lastFx||ST.baseFx);}
+  else if(nb)ST.base=nb;
+  if(sFx.value)ST.baseFx=+sFx.value;
+  ST.goal=sGoal.value?+sGoal.value:null;
   ST.units=sUnits.value?+sUnits.value:null;
   ST.cost=sCost.value?+sCost.value:null;
-  if(ST.base)ST.baseAt=new Date().toLocaleDateString('ja-JP');
-  save();sheet.classList.remove('on');renderToday();
+  save();sheet.classList.remove('on');renderToday();renderLog();
   if(ST.apiKey)loadQuotes();
 };
 clearSet.onclick=()=>{
-  if(confirm('保存した内容をすべて削除します。よろしいですか？')){
+  if(confirm('保存した内容をすべて削除します。積立の記録も消えます。よろしいですか？')){
     localStorage.removeItem(KEY);
-    ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,lastQuotes:null,lastAt:''};
-    fillSet();renderToday();
+    ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,goal:7200000,recs:[],lastQuotes:null,lastFx:null,lastAt:'',lastEst:null,errs:[]};
+    fillSet();renderToday();renderLog();
   }
 };
 
-/* ===================== MARKET STATUS ===================== */
+/* ===================== MARKET ===================== */
 function nyNow(){
   const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'numeric',weekday:'short',hour12:false});
   const p={};f.formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
-  return {h:+p.hour%24,m:+p.minute,wd:p.weekday};
-}
-function marketStatus(){
-  const n=nyNow(),mins=n.h*60+n.m;
-  const weekend=(n.wd==='Sat'||n.wd==='Sun');
-  if(weekend)return{live:false,txt:'米国市場は週末で休みです'};
-  if(mins>=570&&mins<960)return{live:true,txt:'米国市場は取引中（現地 '+String(n.h).padStart(2,'0')+':'+String(n.m).padStart(2,'0')+'）'};
-  if(mins>=240&&mins<570)return{live:false,txt:'時間外（プレマーケット）の時間帯です'};
-  return{live:false,txt:'米国市場は取引時間外です'};
+  return{h:+p.hour%24,m:+p.minute,wd:p.weekday};
 }
 function renderMarket(){
-  const s=marketStatus();
-  mdot.className='dot'+(s.live?' live':'');mtxt.textContent=s.txt;
+  const n=nyNow(),mins=n.h*60+n.m,we=(n.wd==='Sat'||n.wd==='Sun');
+  let live=false,t;
+  if(we)t='米国市場は週末で休みです';
+  else if(mins>=570&&mins<960){live=true;t='米国市場は取引中（現地 '+String(n.h).padStart(2,'0')+':'+String(n.m).padStart(2,'0')+'）';}
+  else if(mins>=240&&mins<570)t='時間外（プレマーケット）の時間帯です';
+  else t='米国市場は取引時間外です';
+  mdot.className='dot'+(live?' live':'');mtxt.textContent=t;
 }
 renderMarket();setInterval(renderMarket,60000);
 
 /* ===================== QUOTES ===================== */
 async function fetchFx(){
-  const urls=['https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY','https://open.er-api.com/v6/latest/USD'];
-  for(const u of urls){
-    try{const r=await fetch(u);const j=await r.json();const v=j.rates&&j.rates.JPY;if(v)return v;}catch(e){}
+  for(const u of ['https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY','https://open.er-api.com/v6/latest/USD']){
+    try{const r=await fetch(u);const j=await r.json();if(j.rates&&j.rates.JPY)return j.rates.JPY;}catch(e){}
   }
   return null;
 }
@@ -521,70 +608,214 @@ async function loadQuotes(){
     const res=await Promise.all(TICKERS.map(async t=>{
       const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${t}&token=${encodeURIComponent(ST.apiKey)}`);
       if(!r.ok)throw new Error(r.status===401||r.status===403?'APIキーが正しくないようです':'取得に失敗しました（'+r.status+'）');
-      const j=await r.json();return{tk:t,c:j.c,dp:j.dp,pc:j.pc};
+      const j=await r.json();return{tk:t,c:j.c,dp:j.dp};
     }));
-    const bad=res.filter(x=>!x.c);
-    if(bad.length===res.length)throw new Error('データが空で返ってきました。APIキーを確認してください。');
+    if(res.every(x=>!x.c))throw new Error('データが空で返ってきました。APIキーを確認してください。');
     const fx=await fetchFx();
-    ST.lastQuotes=res;ST.lastFx=fx;ST.lastAt=new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    ST.lastQuotes=res;ST.lastFx=fx;
+    ST.lastAt=new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
     if(!ST.baseFx&&fx)ST.baseFx=fx;
-    save();renderToday();
-    qcap.textContent=`最終取得 ${ST.lastAt}${fx?`　1ドル＝${fx.toFixed(2)}円`:''}　※%は前日の終値と比べた変化です。無料プランでは15分ほど遅れる場合があります。`;
-  }catch(err){
-    qcap.textContent='エラー：'+err.message;
-  }finally{refresh.disabled=false;refresh.textContent='株価を更新する';}
+    save();renderToday();renderLog();
+  }catch(err){qcap.textContent='エラー：'+err.message;}
+  finally{refresh.disabled=false;refresh.textContent='株価を更新する';}
 }
 refresh.onclick=loadQuotes;
 
-/* ===================== TODAY ===================== */
+/* ===================== 今日 ===================== */
+function currentNav(){
+  const q=ST.lastQuotes;
+  if(!q||!ST.base)return ST.base||null;
+  const dps=q.filter(x=>x.dp!=null).map(x=>x.dp);
+  if(!dps.length)return ST.base;
+  const avg=dps.reduce((a,b)=>a+b,0)/dps.length;
+  const fxChg=(ST.lastFx&&ST.baseFx)?(ST.lastFx/ST.baseFx-1)*100:0;
+  return ST.base*(1+avg/100)*(1+fxChg/100);
+}
 function renderToday(){
   const q=ST.lastQuotes;
-  // quote list
   document.getElementById('qhead').hidden=!q;
   if(q){
     if(ST.lastAt)qcap.textContent=`最終取得 ${ST.lastAt}${ST.lastFx?`　1ドル＝${(+ST.lastFx).toFixed(2)}円`:''}　※%は前日の終値と比べた変化です。無料プランでは15分ほど遅れる場合があります。`;
     document.getElementById('quotes').innerHTML=q.map(x=>{
       const co=CO.find(c=>c.tk===x.tk)||{name:''};
-      const cls=x.dp>=0?'up':'dn';
       return `<div class="q"><span class="tk">${x.tk}</span><span class="nm">${co.name}</span>
         <span class="px">$${x.c?x.c.toFixed(2):'—'}</span>
-        <span class="dp ${cls}">${x.dp!=null?sign(x.dp)+'%':'—'}</span></div>`;
+        <span class="dp ${x.dp>=0?'up':'dn'}">${x.dp!=null?sign(x.dp)+'%':'—'}</span></div>`;
     }).join('');
   }
-  // estimate
   const box=document.getElementById('estBox');
   if(!q||!ST.base){
     box.className='est empty';
     box.innerHTML=`<div class="lab">今日の基準価額（推定）</div>
       <div class="big">${!ST.base?'右上の⚙で「最後に確認した基準価額」を入れてください':'⚙でAPIキーを登録し、株価を更新してください'}</div>
       <div class="note" style="border-color:var(--rule2);color:var(--ink3)">証券会社アプリの基準価額を1つ入れるだけで、10社の値動きから次の値を推定します。</div>`;
-    renderHold(null);return;
+    renderHold(null);renderErr();return;
   }
   const dps=q.filter(x=>x.dp!=null).map(x=>x.dp);
   const avg=dps.reduce((a,b)=>a+b,0)/dps.length;
-  const fxNow=ST.lastFx,fxBase=ST.baseFx;
-  const fxChg=(fxNow&&fxBase)?(fxNow/fxBase-1)*100:0;
+  const fxChg=(ST.lastFx&&ST.baseFx)?(ST.lastFx/ST.baseFx-1)*100:0;
   const total=(1+avg/100)*(1+fxChg/100)-1;
   const est=ST.base*(1+total);
-  const up=total>=0;
+  ST.lastEst=est;save();
   box.className='est';
-  box.innerHTML=`<div class="lab">次に公表される基準価額（推定）</div>
+  box.innerHTML=`<div class="lab">次に公表される基準価額（推定）　※確定値は夜21:30ごろ</div>
     <div class="big">${Math.round(est).toLocaleString('ja-JP')}<span style="font-size:18px"> 円</span></div>
-    <div class="chg">${sign(total*100)}%（${up?'+':''}${Math.round(est-ST.base).toLocaleString('ja-JP')}円）</div>
+    <div class="chg">${sign(total*100)}%（${total>=0?'+':''}${Math.round(est-ST.base).toLocaleString('ja-JP')}円）</div>
     <div class="note">10社の平均騰落（前日終値比） ${sign(avg)}%${fxChg?` ／ 為替 ${sign(fxChg)}%`:' ／ 為替は変化なしとして計算'}<br>
-    起点：${ST.base.toLocaleString('ja-JP')}円（${ST.baseAt||'登録日不明'}）　目安であり、公表値とはずれます</div>`;
-  renderHold(est);
+    起点：${ST.base.toLocaleString('ja-JP')}円（${ST.baseAt||'登録日不明'}）</div>`;
+  renderHold(est);renderErr();
+}
+function renderErr(){
+  const box=document.getElementById('errBox');
+  if(!ST.errs.length){box.innerHTML='';return;}
+  const avg=ST.errs.reduce((a,b)=>a+Math.abs(b.err),0)/ST.errs.length;
+  const rows=ST.errs.slice(0,3).map(e=>`${e.d}　推定${e.est.toLocaleString('ja-JP')} → 確定${e.act.toLocaleString('ja-JP')}（${sign(e.err)}%）`).join('<br>');
+  box.innerHTML=`<div class="card"><h3>推定と確定のずれ</h3>
+    <p style="font-size:12.5px;color:var(--ink2);margin:0 0 6px">直近${ST.errs.length}回の平均誤差 <b class="num">${avg.toFixed(2)}%</b></p>
+    <p style="font-size:12px;color:var(--ink3);margin:0;line-height:1.8">${rows}</p></div>`;
 }
 function renderHold(est){
   const box=document.getElementById('holdBox');
-  if(!ST.units||!est){box.style.display='none';return;}
+  const u=totalUnits()||ST.units;
+  if(!u||!est){box.style.display='none';return;}
   box.style.display='';
-  const val=est*ST.units/10000;
-  const pl=ST.cost?val-ST.cost:null;
+  const val=est*u/10000, cost=totalCost()||ST.cost, pl=cost?val-cost:null;
   box.innerHTML=`<div><span>推定評価額</span><b>${yen(val)}</b></div>
-    <div><span>${ST.cost?'損益（推定）':'保有口数'}</span><b style="color:${pl==null?'var(--ink)':(pl>=0?'var(--gain)':'var(--loss)')}">${
-      pl==null?ST.units.toLocaleString('ja-JP')+'口':(pl>=0?'+':'')+yen(pl)}</b></div>`;
+    <div><span>${cost?'損益（推定）':'保有口数'}</span><b style="color:${pl==null?'var(--ink)':(pl>=0?'var(--gain)':'var(--loss)')}">${
+      pl==null?u.toLocaleString('ja-JP')+'口':(pl>=0?'+':'')+yen(pl)}</b></div>`;
 }
+
+/* ===================== あゆみ ===================== */
+const recUnits=r=>r.amt/r.nav*10000;
+const sortedRecs=()=>[...ST.recs].sort((a,b)=>a.d<b.d?-1:1);
+const totalUnits=()=>ST.recs.length?ST.recs.reduce((s,r)=>s+recUnits(r),0):null;
+const totalCost=()=>ST.recs.length?ST.recs.reduce((s,r)=>s+r.amt,0):null;
+
+function renderLog(){
+  const rs=sortedRecs();
+  const nav=currentNav();
+  document.getElementById('lNav').textContent=nav?Math.round(nav).toLocaleString('ja-JP')+'円':'—';
+  if(!rs.length){
+    lCost.textContent='—';lVal.textContent='—';lPL.textContent='—';
+    lAvg.textContent='—';lCnt.textContent='0回';
+    document.getElementById('cheer').innerHTML=`<div class="info" style="margin:0 0 12px">下の「記録を追加する」から、これまでの積立を入れてください。1件でも入れると、推移のグラフと目標までの進捗が出ます。まとめて入力もできます。</div>`;
+    document.getElementById('recList').innerHTML='';
+    document.getElementById('statBody').innerHTML='<p style="margin:0">記録がまだありません。</p>';
+    document.getElementById('logChart').innerHTML='';
+    document.getElementById('logCap').textContent='';
+    gBar.style.width='0%';gNow.textContent='0円';gGoal.textContent=ST.goal?man(ST.goal):'目標未設定';gCap.textContent='';
+    return;
+  }
+  const cost=totalCost(), units=totalUnits(), avgNav=cost/units*10000;
+  const val=nav?nav*units/10000:null, pl=val!=null?val-cost:null;
+  lCost.textContent=man(cost);
+  lVal.textContent=val!=null?man(val):'—';
+  lPL.innerHTML=pl!=null?`<span style="color:${pl>=0?'var(--gain)':'var(--loss)'}">${pl>=0?'+':''}${man(pl)}</span>`:'—';
+  lAvg.textContent=Math.round(avgNav).toLocaleString('ja-JP')+'円';
+  lCnt.textContent=rs.length+'回';
+
+  // progress
+  const goal=ST.goal||0;
+  if(goal>0){
+    const pct=Math.min(100,cost/goal*100);
+    gBar.style.width=pct.toFixed(1)+'%';
+    gNow.textContent=man(cost)+'（'+pct.toFixed(1)+'%）';
+    gGoal.textContent='目標 '+man(goal);
+    const recent=rs.slice(-6),permo=recent.reduce((s,r)=>s+r.amt,0)/Math.max(1,monthsSpan(recent));
+    const left=goal-cost;
+    gCap.textContent=left<=0?'目標額に到達しています。ここから先は、上限を超えて続けるか、いったん止めて保有だけ続けるかの判断になります。'
+      :`残り ${man(left)}。直近のペース（月あたり約${man(permo)}）が続けば、あと約${Math.ceil(left/Math.max(permo,1))}か月で到達します。`;
+  }else{
+    gBar.style.width='0%';gNow.textContent=man(cost);gGoal.textContent='目標未設定（⚙で設定できます）';gCap.textContent='';
+  }
+
+  // cheer
+  const cheap=rs.filter(r=>r.nav<avgNav).length;
+  const lowest=rs.reduce((a,b)=>a.nav<b.nav?a:b);
+  const months=monthsSpan(rs);
+  let msg;
+  if(pl!=null&&pl<0)msg=`いま含み損ですが、安く買えている期間でもあります。${rs.length}回のうち${cheap}回は平均取得単価より安く仕込めました。`;
+  else if(cheap>=rs.length/2)msg=`${rs.length}回のうち${cheap}回を平均取得単価より安く買えています。下がった月にも手を止めなかった結果です。`;
+  else msg=`${months}か月にわたって${rs.length}回、積み立ててきました。続けること自体が成果です。`;
+  document.getElementById('cheer').innerHTML=`<div class="cheer"><b>${months}か月、${rs.length}回の積立</b>${msg}</div>`;
+
+  // stats
+  document.getElementById('statBody').innerHTML=`
+    <p style="margin:0 0 6px">平均取得単価より<b>安く買えた回数</b>：${cheap}回 ／ ${rs.length}回</p>
+    <p style="margin:0 0 6px">いちばん安く買えた日：<b>${lowest.d}</b>（基準価額 ${lowest.nav.toLocaleString('ja-JP')}円）${nav?`<span class="badge">今より${((nav/lowest.nav-1)*100).toFixed(1)}%安い</span>`:''}</p>
+    <p style="margin:0 0 6px">保有している口数：<b>${Math.round(units).toLocaleString('ja-JP')}口</b></p>
+    <p style="margin:0">${nav?`平均取得単価 ${Math.round(avgNav).toLocaleString('ja-JP')}円に対し、いまの基準価額は ${Math.round(nav).toLocaleString('ja-JP')}円（<b style="color:${nav>=avgNav?'var(--gain)':'var(--loss)'}">${sign((nav/avgNav-1)*100)}%</b>）`:'基準価額を取り込むと、平均取得単価との比較が出ます。'}</p>`;
+
+  // list
+  document.getElementById('recList').innerHTML=rs.slice().reverse().map(r=>{
+    const i=ST.recs.indexOf(r);
+    const gap=avgNav?((r.nav/avgNav-1)*100):0;
+    return `<div class="rec"><span class="d">${r.d}<small>基準価額 ${r.nav.toLocaleString('ja-JP')}円${gap<0?'　安く買えた回':''}</small></span>
+      <span class="v">${r.amt.toLocaleString('ja-JP')}円<small>${Math.round(recUnits(r)).toLocaleString('ja-JP')}口</small></span>
+      <button class="del" data-i="${i}" aria-label="削除">×</button></div>`;
+  }).join('');
+  document.querySelectorAll('.del').forEach(b=>b.onclick=()=>{
+    if(confirm('この記録を削除しますか？')){ST.recs.splice(+b.dataset.i,1);save();renderLog();renderToday();}
+  });
+  document.getElementById('recCap').textContent=`${rs.length}件を記録しています。金額と基準価額から口数を計算しているため、証券会社の表示とわずかにずれることがあります。`;
+
+  drawLog(rs,nav);
+}
+function monthsSpan(rs){
+  if(!rs.length)return 0;
+  const a=jdate(rs[0].d),b=new Date();
+  if(!a)return rs.length;
+  return Math.max(1,Math.round((b-a)/(1000*60*60*24*30.44)));
+}
+function drawLog(rs,nav){
+  const host=document.getElementById('logChart');host.innerHTML='';
+  let cu=0,cc=0;const pts=[];
+  rs.forEach(r=>{cu+=recUnits(r);cc+=r.amt;pts.push({d:r.d,cost:cc,val:cu*r.nav/10000});});
+  if(nav)pts.push({d:'現在',cost:cc,val:cu*nav/10000});
+  if(pts.length<2){host.innerHTML='<p class="cap" style="margin:0">記録が2件以上になるとグラフが出ます。</p>';document.getElementById('logCap').textContent='';return;}
+  const W=640,H=250,P={t:14,r:10,b:26,l:56},s=svgEl(W,H);
+  const vmax=Math.max(...pts.map(p=>Math.max(p.cost,p.val)))*1.08;
+  const x=i=>P.l+i*(W-P.l-P.r)/(pts.length-1),y=v=>P.t+(1-v/vmax)*(H-P.t-P.b);
+  for(let k=0;k<=4;k++){const v=vmax*k/4;
+    s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(v),y2:y(v),class:'grid'}));
+    s.appendChild(txt(P.l-6,y(v)+3.5,Math.round(v/1e4).toLocaleString('ja-JP')+'万','tick','end'));}
+  let dc='',dv='';pts.forEach((p,i)=>{dc+=(i?' L ':'M ')+x(i)+' '+y(p.cost);dv+=(i?' L ':'M ')+x(i)+' '+y(p.val);});
+  s.appendChild(el('path',{d:dv+` L ${x(pts.length-1)} ${H-P.b} L ${x(0)} ${H-P.b} Z`,fill:'#0F4E4512'}));
+  s.appendChild(el('path',{d:dc,fill:'none',stroke:'#8B9491','stroke-width':1.6,'stroke-dasharray':'5 4'}));
+  s.appendChild(el('path',{d:dv,fill:'none',stroke:'#0F4E45','stroke-width':2.4}));
+  s.appendChild(el('circle',{cx:x(pts.length-1),cy:y(pts[pts.length-1].val),r:4,fill:'#0F4E45'}));
+  const step=Math.max(1,Math.ceil(pts.length/5));
+  pts.forEach((p,i)=>{if(i%step===0||i===pts.length-1)s.appendChild(txt(x(i),H-6,p.d==='現在'?'現在':p.d.slice(2,7),'tick'));});
+  host.appendChild(s);
+  const last=pts[pts.length-1];
+  document.getElementById('logCap').textContent=`各回の約定日時点で「その日までに買った口数 × その日の基準価額」を計算しています。緑の線が灰色の線より上にある期間が、含み益だった期間です。`;
+}
+/* record input */
+document.getElementById('addRec').onclick=()=>{
+  const d=rDate.value,amt=+rAmt.value,nav=+rNav.value;
+  if(!d||!amt||!nav){alert('約定日・買付金額・基準価額の3つを入れてください。');return;}
+  ST.recs.push({d,amt,nav});save();
+  rAmt.value='';rNav.value='';
+  renderLog();renderToday();
+};
+document.getElementById('addBulk').onclick=()=>{
+  const lines=bulk.value.split('\n').map(l=>l.trim()).filter(Boolean);
+  let ok=0,ng=0;
+  lines.forEach(l=>{
+    const p=l.split(/[,\t]/).map(x=>x.trim());
+    if(p.length<3){ng++;return;}
+    const d=p[0].replace(/\//g,'-'),amt=+p[1].replace(/[^\d.]/g,''),nav=+p[2].replace(/[^\d.]/g,'');
+    if(!d||!amt||!nav){ng++;return;}
+    ST.recs.push({d,amt,nav});ok++;
+  });
+  save();bulk.value='';renderLog();renderToday();
+  alert(`${ok}件を追加しました。${ng?`（${ng}件は形式が読み取れず飛ばしました）`:''}`);
+};
+document.getElementById('expBtn').onclick=()=>{
+  bulk.value=sortedRecs().map(r=>`${r.d},${r.amt},${r.nav}`).join('\n');
+  alert('上の欄に書き出しました。全選択してコピーし、メモアプリなどに保存してください。');
+};
+document.getElementById('impBtn').onclick=()=>document.getElementById('addBulk').click();
 
 /* ===================== COMPANIES ===================== */
 document.getElementById('companies').innerHTML=CO.map(c=>`
@@ -643,7 +874,7 @@ function drawGrowth(){
     let d=`M ${x(0)} ${y(0)}`;dd.forEach((v,i)=>d+=` L ${x(i)} ${y(Math.max(v,-50))}`);
     s.appendChild(el('path',{d:d+` L ${x(dd.length-1)} ${y(0)} Z`,fill:'#B3443722'}));
     s.appendChild(el('path',{d,fill:'none',stroke:'#B34437','stroke-width':2}));
-    gCap.textContent='各年末に、それまでの最高値から何%下がっていたか。2022年末は約42%下。回復に1年かかりました。';
+    gcap2.textContent='各年末に、それまでの最高値から何%下がっていたか。2022年末は約42%下。回復に1年かかりました。';
   }else{
     const useLog=gMode==='log',vmax=Math.max(...growth),vmin=90;
     const sc=v=>useLog?(Math.log(v)-Math.log(vmin))/(Math.log(vmax*1.08)-Math.log(vmin)):v/(vmax*1.08);
@@ -657,7 +888,7 @@ function drawGrowth(){
     s.appendChild(el('path',{d,fill:'none',stroke:'#0F4E45','stroke-width':2.2}));
     growth.forEach((v,i)=>{s.appendChild(el('circle',{cx:x(i),cy:y(v),r:2.8,fill:'#0F4E45'}));
       if(i%2===0||i===8)s.appendChild(txt(x(i),y(v)-9,Math.round(v),'tick','middle','#0F4E45'));});
-    gCap.textContent=useLog?'対数目盛り。傾きが同じなら同じ成長率。2020年の急騰と2022年の急落を公平に比べられます。'
+    gcap2.textContent=useLog?'対数目盛り。傾きが同じなら同じ成長率。2020年の急騰と2022年の急落を公平に比べられます。'
       :'2017年末に100だった指数は2025年末におよそ705。8年で約7倍ですが、2022年に一度4割以上を失っています。';
   }
   gY.forEach((yr,i)=>{if(i%2===0)s.appendChild(txt(x(i),H-7,String(yr).slice(2)+'年','tick'));});
@@ -669,12 +900,23 @@ document.querySelectorAll('#gSeg button').forEach(b=>b.onclick=()=>{
 drawGrowth();
 
 /* ===================== SIMULATOR ===================== */
-const S={init:0,mon:30000,yrs:10,ret:10,fx:0,crash:0,acct:'nisa'};
+const S={init:0,mon:30000,yrs:10,ret:10,fx:0,crash:0,acct:'nisa',cap:0,capMode:'stop'};
 function runSim(pct){
   const net=(pct+S.fx-FEE)/100,m=Math.pow(1+net,1/12)-1,N=S.yrs*12,cm=Math.floor(N/2);
-  let v=S.init,pr=S.init;const pts=[{v,pr}];
-  for(let i=1;i<=N;i++){v=v*(1+m)+S.mon;pr+=S.mon;if(S.crash&&i===cm)v*=(1+S.crash/100);if(i%12===0)pts.push({v,pr});}
-  return{pts,v,pr};
+  let v=S.init,pr=S.init,capHit=null;
+  const pts=[{v,pr}];
+  for(let i=1;i<=N;i++){
+    let add=S.mon;
+    if(S.cap>0&&S.capMode==='stop'){
+      const room=Math.max(0,S.cap-pr);
+      add=Math.min(add,room);
+    }
+    if(S.cap>0&&capHit===null&&pr+add>=S.cap)capHit=i;
+    v=v*(1+m)+add;pr+=add;
+    if(S.crash&&i===cm)v*=(1+S.crash/100);
+    if(i%12===0)pts.push({v,pr});
+  }
+  return{pts,v,pr,capHit};
 }
 function drawSim(){
   const b=runSim(S.ret),lo=runSim(S.ret-10),hi=runSim(S.ret+10);
@@ -682,12 +924,28 @@ function drawSim(){
   rPrin.textContent=man(b.pr);rVal.textContent=man(b.v-tax);
   rGain.textContent=(gross-tax>=0?'+':'')+man(gross-tax);
   rMul.textContent=b.pr>0?(b.v/b.pr).toFixed(2)+'倍':'—';
+
+  const ci=document.getElementById('capInfo');
+  if(S.cap>0){
+    ci.hidden=false;
+    if(b.capHit){
+      const y=Math.floor(b.capHit/12),mo=b.capHit%12;
+      ci.innerHTML=`累計 ${man(S.cap)} に到達するのは <b>${y}年${mo?mo+'か月':''}後</b>。`
+        +(S.capMode==='stop'
+          ? 'そこで積立をやめ、あとは保有だけを続ける前提で計算しています。'
+          : '上限を超えても積立を続ける前提なので、元本はさらに増えていきます。');
+    }else{
+      ci.innerHTML=`この積立額と年数では、累計 ${man(S.cap)} には届きません（最終の元本は ${man(b.pr)}）。`;
+    }
+  }else ci.hidden=true;
+
   simCap.textContent=`年率${S.ret}%${S.fx?`（為替${S.fx>0?'+':''}${S.fx}%）`:''}から信託報酬0.7755%を引いた実質${(S.ret+S.fx-FEE).toFixed(2)}%で計算。`
     +(S.crash?`${Math.floor(S.yrs/2)}年目に${S.crash}%の暴落を1回はさんでいます。`:'')
     +(S.acct==='tax'?`利益に20.315%（${man(tax)}）の税を引いた額です。`:'NISAを想定し税は引いていません。')
     +'　薄い帯は年率が±10%ぶれた場合の幅。';
+
   const host=document.getElementById('simChart');host.innerHTML='';
-  const W=640,H=250,P={t:12,r:8,b:24,l:52},s=svgEl(W,H);
+  const W=640,H=250,P={t:12,r:8,b:24,l:56},s=svgEl(W,H);
   const vmax=Math.max(hi.v,b.v)*1.06,x=i=>P.l+i*(W-P.l-P.r)/S.yrs,y=v=>P.t+(1-v/vmax)*(H-P.t-P.b);
   for(let k=0;k<=4;k++){const v=vmax*k/4;
     s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(v),y2:y(v),class:'grid'}));
@@ -699,15 +957,22 @@ function drawSim(){
   s.appendChild(el('path',{d:dp,fill:'none',stroke:'#8B9491','stroke-width':1.5,'stroke-dasharray':'5 4'}));
   s.appendChild(el('path',{d:dv,fill:'none',stroke:'#0F4E45','stroke-width':2.4}));
   s.appendChild(el('circle',{cx:x(S.yrs),cy:y(b.v),r:3.5,fill:'#0F4E45'}));
+  if(S.cap>0&&b.capHit){const cx=x(b.capHit/12);
+    s.appendChild(el('line',{x1:cx,x2:cx,y1:P.t,y2:H-P.b,stroke:'#A9781F','stroke-width':1,'stroke-dasharray':'3 3'}));
+    s.appendChild(txt(cx,P.t-1,'上限到達','tick','middle','#A9781F'));}
   const st=S.yrs<=12?2:Math.ceil(S.yrs/6);
   for(let i=0;i<=S.yrs;i+=st)s.appendChild(txt(x(i),H-6,i+'年','tick'));
   host.appendChild(s);
 }
-[['init','init',1e4,'initV'],['mon','mon',1e4,'monV'],['yrs','yrs',1,'yrsV']].forEach(([id,k,mul,vid])=>{
-  const r=document.getElementById(id);
-  r.oninput=()=>{S[k]=+r.value*mul;document.getElementById(vid).textContent=r.value;drawSim();};
-});
-[['scen','r','ret',Number],['fxp','f','fx',Number],['crashp','c','crash',Number],['acctp','a','acct',String]].forEach(([id,at,k,cast])=>{
+document.getElementById('init').oninput=function(){S.init=+this.value*1e4;initV.textContent=(+this.value).toLocaleString('ja-JP');drawSim();};
+document.getElementById('mon').oninput=function(){S.mon=+this.value*1e4;monV.textContent=(+this.value).toFixed(1);drawSim();};
+document.getElementById('yrs').oninput=function(){S.yrs=+this.value;yrsV.textContent=this.value;drawSim();};
+document.getElementById('cap').oninput=function(){
+  S.cap=+this.value*1e4;
+  capV.textContent=+this.value===0?'上限なし':(+this.value).toLocaleString('ja-JP')+'万円';
+  drawSim();
+};
+[['scen','r','ret',Number],['fxp','f','fx',Number],['crashp','c','crash',Number],['acctp','a','acct',String],['capMode','m','capMode',String]].forEach(([id,at,k,cast])=>{
   const g=document.getElementById(id);
   g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
     g.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed','false'));
@@ -725,7 +990,7 @@ function drawBack(){
   bPrin.textContent=man(pr);bVal.textContent=man(v);bMul.textContent=(v/pr).toFixed(2)+'倍';
   bDD.textContent=man(v2-p2)+'（'+((v2/p2-1)*100).toFixed(1)+'%）';
   const host=document.getElementById('backChart');host.innerHTML='';
-  const W=640,H=250,P={t:14,r:8,b:24,l:52},s=svgEl(W,H);
+  const W=640,H=250,P={t:14,r:8,b:24,l:56},s=svgEl(W,H);
   const vmax=Math.max(v,pr)*1.08,x=i=>P.l+i*(W-P.l-P.r)/(pts.length-1),y=q=>P.t+(1-q/vmax)*(H-P.t-P.b);
   for(let k=0;k<=4;k++){const q=vmax*k/4;
     s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(q),y2:y(q),class:'grid'}));
@@ -746,8 +1011,9 @@ document.querySelectorAll('#bAmtSeg button').forEach(b=>b.onclick=()=>{
 drawBack();
 
 /* ===================== INIT ===================== */
-renderToday();
-if(ST.apiKey&&(!ST.lastQuotes))loadQuotes();
+rDate.value=new Date().toISOString().slice(0,10);
+renderToday();renderLog();
+if(ST.apiKey&&!ST.lastQuotes)loadQuotes();
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
