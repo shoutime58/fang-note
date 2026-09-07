@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>FANG+ 観測ノート</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0F4E45">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FANG+">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{
+  --bg:#ECEFEE;--paper:#FBFCFC;--ink:#131A19;--ink2:#59635F;--ink3:#8B9491;
+  --rule:#C9D2CF;--rule2:#E1E7E5;--accent:#0F4E45;--soft:#DCE9E5;
+  --gain:#25795C;--loss:#B34437;--mark:#A9781F;--markSoft:#F3E7CE;
+  --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  --sans:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",system-ui,-apple-system,sans-serif;
+  --safeB:env(safe-area-inset-bottom,0px);
+  --safeT:env(safe-area-inset-top,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.8;
+  -webkit-font-smoothing:antialiased;font-feature-settings:"palt" 1;
+  padding-bottom:calc(58px + var(--safeB));overscroll-behavior-y:none;
+}
+h1,h2,h3,h4,.serif{font-family:var(--serif);font-weight:600;line-height:1.4;margin:0}
+p{margin:0 0 .9em}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+button{font:inherit}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.tick{font-size:10px;fill:var(--ink3)}
+.grid{stroke:var(--rule2);stroke-width:1}.zero{stroke:var(--ink3);stroke-width:1}
+
+/* header */
+header{position:sticky;top:0;z-index:30;background:rgba(236,239,238,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule);padding:calc(var(--safeT) + 10px) 16px 10px;
+  display:flex;align-items:center;justify-content:space-between;gap:10px}
+header .ttl{font-family:var(--serif);font-size:17px}
+header .ttl small{display:block;font-family:var(--sans);font-size:10.5px;color:var(--ink3);line-height:1.4}
+.gear{background:none;border:1px solid var(--rule);border-radius:50%;width:34px;height:34px;
+  display:grid;place-items:center;cursor:pointer;color:var(--ink2);flex:none;font-size:15px}
+
+main{padding:16px 16px 30px;max-width:640px;margin:0 auto}
+.page{display:none}.page.on{display:block}
+h2.sec{font-size:19px;margin:26px 0 4px}
+h2.sec:first-child{margin-top:0}
+.sub{color:var(--ink2);font-size:13px;margin-bottom:12px;line-height:1.7}
+
+.card{background:var(--paper);border:1px solid var(--rule);padding:16px;margin-bottom:12px}
+.card h3{font-size:15.5px;margin-bottom:6px}
+
+/* big estimate */
+.est{background:var(--accent);color:#fff;padding:20px 18px;margin-bottom:12px}
+.est .lab{font-size:11.5px;opacity:.75;line-height:1.5}
+.est .big{font-size:38px;font-family:var(--sans);font-weight:600;font-variant-numeric:tabular-nums;line-height:1.15;margin:6px 0 2px}
+.est .chg{font-size:16px;font-variant-numeric:tabular-nums}
+.est .note{font-size:11.5px;opacity:.72;line-height:1.6;margin-top:12px;border-top:1px solid rgba(255,255,255,.22);padding-top:10px}
+.est.empty{background:var(--paper);color:var(--ink);border:1px dashed var(--rule)}
+.est.empty .big{font-size:17px;font-family:var(--serif)}
+
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-bottom:12px}
+.kv div{background:var(--paper);padding:12px 14px}
+.kv span{display:block;font-size:11px;color:var(--ink3);line-height:1.5}
+.kv b{font-size:19px;font-variant-numeric:tabular-nums;font-weight:600}
+
+/* quote list */
+.q{display:grid;grid-template-columns:62px 1fr auto auto;gap:10px;align-items:center;
+  padding:11px 14px;background:var(--paper);border:1px solid var(--rule);border-top:0}
+.q:first-of-type{border-top:1px solid var(--rule)}
+.q .tk{font-weight:700;font-size:13.5px;letter-spacing:.03em}
+.q .nm{font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.q .px{font-size:13.5px;font-variant-numeric:tabular-nums;text-align:right}
+.q .dp{font-size:13.5px;font-variant-numeric:tabular-nums;text-align:right;font-weight:600;min-width:62px}
+.up{color:var(--gain)}.dn{color:var(--loss)}
+
+.btn{display:block;width:100%;padding:13px;background:var(--accent);color:#fff;border:0;
+  font-size:15px;cursor:pointer;margin-bottom:10px}
+.btn.sub{background:var(--paper);color:var(--accent);border:1px solid var(--accent)}
+.btn:disabled{opacity:.5}
+.mstat{font-size:12px;color:var(--ink2);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink3);flex:none}
+.dot.live{background:var(--gain);box-shadow:0 0 0 3px rgba(37,121,92,.18)}
+
+/* terms */
+.t{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;border-bottom:1px dashed var(--mark)}
+.t::after{content:"?";font-size:9px;vertical-align:super;color:var(--mark);margin-left:1px;font-weight:700}
+#pop{position:fixed;left:12px;right:12px;bottom:calc(70px + var(--safeB));background:var(--ink);color:#F3F6F5;
+  padding:18px 20px;z-index:60;transform:translateY(180%);transition:transform .22s ease;
+  box-shadow:0 20px 50px -20px rgba(0,0,0,.7);max-width:616px;margin:0 auto}
+#pop.on{transform:translateY(0)}
+#pop h4{font-size:16px;color:#fff;margin-bottom:5px}
+#pop p{font-size:13.5px;line-height:1.75;color:#C9D3D0;margin:0}
+#pop .x{position:absolute;top:8px;right:10px;background:none;border:0;color:#7E8B88;font-size:22px;cursor:pointer}
+
+/* companies */
+details.co{background:var(--paper);border:1px solid var(--rule);margin-bottom:8px}
+details.co>summary{list-style:none;cursor:pointer;padding:13px 15px;display:grid;
+  grid-template-columns:58px 1fr auto;gap:10px;align-items:center}
+details.co>summary::-webkit-details-marker{display:none}
+.co .tk{font-weight:700;font-size:14px;letter-spacing:.03em}
+.co .tk small{display:block;font-weight:400;font-size:10px;color:var(--ink3)}
+.co .nm{font-family:var(--serif);font-size:15px}
+.co .nm em{display:block;font-style:normal;font-family:var(--sans);font-size:11.5px;color:var(--ink2);line-height:1.5;margin-top:1px}
+.co .r5{text-align:right;font-variant-numeric:tabular-nums;font-size:14px;font-weight:600}
+.co .r5 small{display:block;font-size:9.5px;color:var(--ink3);font-weight:400}
+.cob{padding:2px 15px 18px;border-top:1px solid var(--rule2);font-size:13.5px}
+.hz{border-left:2px solid var(--soft);padding:2px 0 2px 12px;margin:13px 0}
+.hz h5{margin:0 0 1px;font-size:12px;font-family:var(--sans);font-weight:700;color:var(--accent)}
+.hz p{margin:0;color:var(--ink2);font-size:13.5px}
+.bx{padding:11px 13px;font-size:13px;line-height:1.7;margin-top:10px}
+.bx h6{margin:0 0 3px;font-size:11.5px;font-weight:700}
+.bx.g{background:#E9F2EE;color:#1D4E3D}.bx.b{background:#F7EBE9;color:#7C332A}
+
+/* controls */
+.seg{display:flex;border:1px solid var(--rule);background:var(--paper);margin-bottom:12px;flex-wrap:wrap}
+.seg button{flex:1;font-size:12.5px;padding:8px 4px;background:none;border:0;border-right:1px solid var(--rule);cursor:pointer;color:var(--ink2)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed=true]{background:var(--accent);color:#fff}
+.fld{margin-bottom:15px}
+.fld label{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--ink2);margin-bottom:4px}
+.fld label b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent);height:26px}
+input[type=text],input[type=number],input[type=date]{width:100%;padding:11px 12px;border:1px solid var(--rule);
+  background:#fff;font:inherit;font-size:16px;border-radius:0;-webkit-appearance:none}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pills button{font-size:12.5px;padding:7px 11px;border:1px solid var(--rule);background:var(--paper);cursor:pointer;color:var(--ink2)}
+.pills button[aria-pressed=true]{border-color:var(--accent);background:var(--accent);color:#fff}
+.cap{font-size:11.5px;color:var(--ink3);line-height:1.7;margin-top:9px}
+.warn{background:#F7EBE9;border-left:3px solid var(--loss);padding:12px 14px;font-size:12.5px;color:#7C332A;line-height:1.75}
+
+/* table */
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;font-size:11.5px;min-width:660px;font-variant-numeric:tabular-nums;width:100%}
+th,td{padding:6px 5px;text-align:right;border-bottom:1px solid var(--rule2);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--paper);font-weight:600}
+thead th{border-bottom:1px solid var(--ink);font-size:10.5px;color:var(--ink2)}
+tr.idx td{background:#EEF3F1;font-weight:700;border-top:1px solid var(--ink)}
+tr.idx td:first-child{background:#EEF3F1}
+
+ol.rules{counter-reset:r;list-style:none;padding:0;margin:0}
+ol.rules li{counter-increment:r;position:relative;padding:0 0 16px 40px}
+ol.rules li::before{content:counter(r);position:absolute;left:0;top:2px;width:26px;height:26px;border:1px solid var(--accent);
+  color:var(--accent);display:grid;place-items:center;font-size:12px;font-weight:700;border-radius:50%}
+ol.rules b{display:block;font-family:var(--serif);font-size:15.5px}
+ol.rules p{font-size:13px;color:var(--ink2);margin:0}
+.glos div{background:var(--paper);border:1px solid var(--rule);border-top:0;padding:12px 14px}
+.glos div:first-child{border-top:1px solid var(--rule)}
+.glos dt{font-weight:700;font-size:13.5px}
+.glos dd{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.7}
+
+/* tabbar */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(251,252,252,.97);backdrop-filter:blur(10px);border-top:1px solid var(--rule);
+  padding-bottom:var(--safeB)}
+.tabs button{background:none;border:0;padding:8px 2px 7px;cursor:pointer;color:var(--ink3);font-size:10.5px;line-height:1.3}
+.tabs button b{display:block;font-size:17px;font-weight:400;line-height:1.2;margin-bottom:1px}
+.tabs button[aria-pressed=true]{color:var(--accent);font-weight:700}
+
+/* sheet */
+.sheet{position:fixed;inset:0;z-index:70;background:rgba(19,26,25,.45);display:none}
+.sheet.on{display:block}
+.sheet .inner{position:absolute;left:0;right:0;bottom:0;max-height:92%;overflow-y:auto;background:var(--bg);
+  padding:18px 16px calc(30px + var(--safeB));max-width:640px;margin:0 auto}
+.sheet h3{font-size:18px;margin-bottom:2px}
+.sheet .lab{font-size:12.5px;color:var(--ink2);margin:16px 0 5px}
+.ok{background:#E9F2EE;color:#1D4E3D;padding:10px 12px;font-size:12.5px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ttl">FANG+ 観測ノート<small id="hsub">iFreeNEXT FANG+インデックス</small></div>
+  <button class="gear" id="openSet" aria-label="設定">⚙</button>
+</header>
+
+<main>
+
+<!-- ================= 今日 ================= -->
+<div class="page on" id="p-today">
+  <div id="estBox"></div>
+
+  <div class="kv" id="holdBox"></div>
+
+  <div class="mstat"><span class="dot" id="mdot"></span><span id="mtxt">米国市場の状況を確認中</span></div>
+  <button class="btn" id="refresh">株価を更新する</button>
+  <div id="quotes"></div>
+  <p class="cap" id="qcap">「株価を更新する」を押すと、10社の最新値を取り込みます。無料プランでは15分ほど遅れる場合があります。</p>
+
+  <div class="card" style="margin-top:16px">
+    <h3>推定のしくみ</h3>
+    <p style="font-size:13px;color:var(--ink2);margin:0">FANG+は10社を10%ずつ持つ<button class="t" data-k="equal">等ウェイト</button>なので、10社の騰落率を単純平均すれば指数の動きにほぼ一致します。それに<button class="t" data-k="fx">為替</button>の変動を掛けて、前回の<button class="t" data-k="kijun">基準価額</button>から次の値を推定しています。目安であって、公表値とは数字がずれます。</p>
+  </div>
+</div>
+
+<!-- ================= 10社 ================= -->
+<div class="page" id="p-stocks">
+  <h2 class="sec">10社の現在地</h2>
+  <p class="sub">タップで展開します。短期・中期・長期で何を見ればいいかを分けて書いています。</p>
+  <div id="companies"></div>
+  <p class="cap">「5年平均」は2021〜2025年の年平均リターン（米ドルベース）。同期間のFANG+指数は+20.2%でした。数値は2026年前半までの公表資料にもとづく整理です。</p>
+</div>
+
+<!-- ================= 試算 ================= -->
+<div class="page" id="p-sim">
+  <h2 class="sec">これから何年か、を試算する</h2>
+  <p class="sub">将来の予測ではなく「この前提ならこうなる」を確かめる道具です。</p>
+  <div class="fld"><label for="init">はじめに入れる金額<b><span id="initV">0</span>万円</b></label><input type="range" id="init" min="0" max="500" step="10" value="0"></div>
+  <div class="fld"><label for="mon">毎月の積立額<b><span id="monV">3</span>万円</b></label><input type="range" id="mon" min="0" max="20" step="0.5" value="3"></div>
+  <div class="fld"><label for="yrs">保有する年数<b><span id="yrsV">10</span>年</b></label><input type="range" id="yrs" min="1" max="30" step="1" value="10"></div>
+  <div class="fld"><label>想定する年率リターン（<button class="t" data-k="fukuri">複利</button>）</label>
+    <div class="pills" id="scen"><button data-r="5">慎重 5%</button><button data-r="10" aria-pressed="true">標準 10%</button><button data-r="15">強気 15%</button><button data-r="27.8">過去並み 27.8%</button></div></div>
+  <div class="fld"><label>為替の前提</label>
+    <div class="pills" id="fxp"><button data-f="-2">円高 年−2%</button><button data-f="0" aria-pressed="true">横ばい</button><button data-f="2">円安 年+2%</button></div></div>
+  <div class="fld"><label>途中の暴落（<button class="t" data-k="dd">ドローダウン</button>）</label>
+    <div class="pills" id="crashp"><button data-c="0" aria-pressed="true">なし</button><button data-c="-40">中盤に −40%</button><button data-c="-55">中盤に −55%</button></div></div>
+  <div class="fld"><label>口座</label>
+    <div class="pills" id="acctp"><button data-a="nisa" aria-pressed="true">NISA</button><button data-a="tax">課税 20.315%</button></div></div>
+
+  <div class="kv" style="margin-top:16px">
+    <div><span>投資した元本</span><b class="num" id="rPrin">—</b></div>
+    <div><span>最終の評価額</span><b class="num" id="rVal" style="color:var(--accent)">—</b></div>
+    <div><span>増えた分（手取り）</span><b class="num" id="rGain">—</b></div>
+    <div><span>元本の何倍か</span><b class="num" id="rMul">—</b></div>
+  </div>
+  <div class="card"><div id="simChart"></div><p class="cap" id="simCap"></p></div>
+  <div class="warn">毎年きっちり同じ利回りで計算しています。現実は+95%の年と−40%の年が不規則に並びます。最終額が同じでも、途中で資産が半分になる期間を通るのが普通です。</div>
+
+  <h2 class="sec">過去に積み立てていたら</h2>
+  <p class="sub">2018年1月〜2025年12月。実際の年別リターンを月割りにし、信託報酬0.7755%を引いた試算です（為替の影響は含みません）。</p>
+  <div class="seg" id="bAmtSeg">
+    <button data-a="10000">月1万</button><button data-a="30000" aria-pressed="true">月3万</button>
+    <button data-a="50000">月5万</button><button data-a="100000">月10万</button>
+  </div>
+  <div class="kv">
+    <div><span>投資した元本</span><b class="num" id="bPrin">—</b></div>
+    <div><span>2025年末の評価額</span><b class="num" id="bVal" style="color:var(--accent)">—</b></div>
+    <div><span>倍率</span><b class="num" id="bMul">—</b></div>
+    <div><span>2022年末の含み損</span><b class="num" id="bDD" style="color:var(--loss)">—</b></div>
+  </div>
+  <div class="card"><div id="backChart"></div>
+  <p class="cap">2022年、この積立は一時的に元本割れしています。そこで売っていたら、翌2023年の+95.6%を受け取れませんでした。<button class="t" data-k="dca">ドルコスト平均法</button></p></div>
+</div>
+
+<!-- ================= 学ぶ ================= -->
+<div class="page" id="p-learn">
+  <h2 class="sec">値動きの歴史</h2>
+  <p class="sub">2017年末を100とした指数の推移。表示を変えると見え方が変わります。</p>
+  <div class="seg" id="gSeg"><button data-g="linear" aria-pressed="true">ふつう</button><button data-g="log">対数</button><button data-g="dd">下落率</button></div>
+  <div class="card"><div id="growthChart"></div><p class="cap" id="gCap"></p></div>
+  <div class="card"><div id="heroChart"></div><p class="cap">年別リターン（米ドルベース）。8年平均は+27.8%ですが、平均どおりの年は一度もありません。</p></div>
+
+  <h2 class="sec">年別ヒートマップ</h2>
+  <p class="sub">濃い緑が大きなプラス、濃い赤が大きなマイナス。毎年の主役が入れ替わります。</p>
+  <div class="card"><div class="scroll"><table id="heat"></table></div>
+  <p class="cap">2022年は10社すべてマイナス。「10社に分散しているから安心」は成り立ちません。単位%、配当は含みません。</p></div>
+
+  <h2 class="sec">中身は3つの階層</h2>
+  <div class="card"><h3>① 土台をつくる — NVDA / AVGO / MU</h3><p style="font-size:13px;color:var(--ink2);margin:0">AIを動かす半導体・メモリ。需要は最も爆発的ですが、市況の波も最大です。</p></div>
+  <div class="card"><h3>② 場所を貸す — MSFT / AMZN / GOOGL</h3><p style="font-size:13px;color:var(--ink2);margin:0">クラウドとして計算能力を企業に貸す層。安定収益を持ちながら巨額の設備投資を続けています。</p></div>
+  <div class="card"><h3>③ 人に届ける — META / AAPL / NFLX / PLTR</h3><p style="font-size:13px;color:var(--ink2);margin:0">広告・端末・動画・業務ソフトとして、利用者や企業から直接お金を受け取る層。</p></div>
+
+  <h2 class="sec">先に知っておく弱点</h2>
+  <div class="card">
+    <p style="font-size:13.5px"><b>1. 分散されていない</b><br>米国・テクノロジー・大型成長株に10社集中。金利上昇やAI期待の剥落では10社が同時に下がります。</p>
+    <p style="font-size:13.5px"><b>2. AI投資への相互依存</b><br>NVDA・AVGO・MUの売上は、MSFT・AMZN・GOOGL・METAの設備投資そのもの。買い手が絞れば売り手が直撃されます。</p>
+    <p style="font-size:13.5px"><b>3. コストが高め</b><br>信託報酬は年0.7755%程度。全世界株やS&amp;P500（年0.05〜0.1%程度）の8〜15倍です。</p>
+    <p style="font-size:13.5px"><b>4. 為替ヘッジなし</b><br>米国株が上がっても円高なら円換算の成績は削られます。逆に円安は追い風。</p>
+    <p style="font-size:13.5px;margin:0"><b>5. 中身が変わる</b><br>10年後のFANG+が今の10社とは限りません。勝ち馬に乗り換える長所であり、短所でもあります。</p>
+  </div>
+  <div class="card"><h3>だから、こう組む人が多い</h3><p style="font-size:13.5px;margin:0">中心はS&amp;P500や全世界株にして、FANG+は資産の1〜2割の「攻めの枠」に留める。半分になっても生活も精神も揺れない金額に抑える、という考え方です。適切な比率は年齢・収入の安定度・他の資産で変わります。</p></div>
+
+  <h2 class="sec">10年持ち切るための5つの取り決め</h2>
+  <div class="card"><ol class="rules">
+    <li><b>買う金額の上限を先に決める</b><p>「毎月◯円、リスク資産の◯%まで」。上げ相場でも増やさない。増やしたくなった時が、たいてい高値です。</p></li>
+    <li><b>下がったときの行動を文章にする</b><p>「−30%でも積立を止めない」「−50%なら積立額を1.5倍にする」など、数字と動詞で書いておく。</p></li>
+    <li><b>見る回数を決める</b><p>毎日見ると感情が値動きに引きずられます。月1回、決算が出そろう頃で十分です。</p></li>
+    <li><b>売る条件は値段でなく用途で決める</b><p>「住宅資金が要るとき」「65歳から取り崩す」。「◯円になったら売る」は守れません。</p></li>
+    <li><b>年1回、中身を確認する</b><p>3・6・9・12月に構成銘柄が入れ替わります。10社が何の会社かを年1度確認する。これが一番効率のいい勉強です。</p></li>
+  </ol></div>
+
+  <h2 class="sec">用語集</h2>
+  <dl class="glos" id="glos" style="margin:0"></dl>
+
+  <p class="cap" style="margin-top:20px">学習・整理を目的とした個人用の資料です。投資助言ではありません。基準価額・純資産などの初期値は2026年9月2日時点、各社の業績は2026年前半までの公表資料にもとづきます。最終的な投資判断はご自身の責任でお願いします。</p>
+</div>
+
+</main>
+
+<nav class="tabs">
+  <button data-p="today" aria-pressed="true"><b>◉</b>今日</button>
+  <button data-p="stocks"><b>▤</b>10社</button>
+  <button data-p="sim"><b>◪</b>試算</button>
+  <button data-p="learn"><b>✦</b>学ぶ</button>
+</nav>
+
+<div id="pop" role="dialog"><button class="x" id="popX" aria-label="閉じる">×</button><h4 id="popT"></h4><p id="popB"></p></div>
+
+<!-- ================= 設定 ================= -->
+<div class="sheet" id="setSheet">
+  <div class="inner">
+    <h3>設定</h3>
+    <p class="cap" style="margin-top:2px">入力した内容はこのiPhoneの中だけに保存されます。どこにも送信されません。</p>
+
+    <p class="lab">① Finnhub の APIキー<br><span style="color:var(--ink3)">finnhub.io で無料登録するともらえる文字列。株価の取得に使います。</span></p>
+    <input type="text" id="sKey" placeholder="例）cq1abc2def3ghi4jkl" autocapitalize="off" autocorrect="off" spellcheck="false">
+
+    <p class="lab">② 最後に確認した基準価額（円）<br><span style="color:var(--ink3)">証券会社アプリに出ている数字。これを起点に推定します。</span></p>
+    <input type="number" id="sBase" placeholder="例）100057" inputmode="decimal">
+
+    <p class="lab">③ そのときの為替（1ドル＝◯円）<br><span style="color:var(--ink3)">空欄なら自動取得した値を使います。</span></p>
+    <input type="number" id="sFx" placeholder="例）152.3" inputmode="decimal">
+
+    <p class="lab">④ 保有口数（口）<br><span style="color:var(--ink3)">証券会社アプリの「保有口数」。空欄なら評価額は表示しません。</span></p>
+    <input type="number" id="sUnits" placeholder="例）1234567" inputmode="numeric">
+
+    <p class="lab">⑤ 取得金額の合計（円）<br><span style="color:var(--ink3)">これまでに投資した合計。損益の計算に使います。</span></p>
+    <input type="number" id="sCost" placeholder="例）1200000" inputmode="numeric">
+
+    <button class="btn" id="saveSet" style="margin-top:20px">保存する</button>
+    <button class="btn sub" id="closeSet">閉じる</button>
+    <button class="btn sub" id="clearSet" style="border-color:var(--loss);color:var(--loss)">保存した内容を全部消す</button>
+  </div>
+</div>
+
+<script>
+/* ===================== DATA ===================== */
+const YEARS=[2018,2019,2020,2021,2022,2023,2024,2025];
+const IDX=[0.1,39.7,103,17.6,-40.1,95.6,50.5,20.5];
+const FEE=0.7755;
+
+const CO=[
+{tk:"NVDA",name:"エヌビディア",jp:"AIを動かすGPUの供給元",layer:"土台",r5:70.4,rows:[-31.0,76.3,122,125,-50.0,239,171,38.9],
+ now:"2026年度第4四半期の売上は前年同期比73%増の681億ドル。売上の約9割をデータセンター部門が占めます。",
+ s:"新型プラットフォーム「Blackwell」の量産出荷が本格化した局面。大手クラウド企業の設備投資計画が株価の直接の材料です。",
+ m:"次世代アーキテクチャ「Rubin」への移行が焦点。推論コストを大きく下げる設計で、AI導入の裾野が広がるかが試されます。",
+ l:"開発基盤CUDAを含めた「AI開発の標準環境」を握っている点が本質的な強み。世界中の開発者が同社の環境を前提に動く構造は簡単に崩れません。",
+ g:"開発環境ごと囲い込むため、性能で並ばれても乗り換えコストが大きい。製品計画が数年先まで公表されている。",
+ b:"売上が少数の巨大顧客に集中し、その顧客自身が自社チップを開発中。半導体は需要の波が大きく、輸出規制など政治要因も受ける。"},
+{tk:"AVGO",name:"ブロードコム",jp:"特注AI半導体と企業向けソフト",layer:"土台",r5:51.2,rows:[-1.0,24.3,38.6,52.0,-16.0,99.6,108,49.3],
+ now:"2026年度第1四半期の売上は193億ドル（前年比29%増）。うちAI関連は前年比106%増の84億ドルへ急拡大。",
+ s:"大手クラウド企業から受注する特注AIチップ（XPU）の伸び。汎用GPUに対し、顧客専用に最適化する立ち位置です。",
+ m:"グーグルやメタが自社専用チップの開発を委託する流れが続くか。電力効率で優位に立てるかが鍵。",
+ l:"2023年のVMware買収で半導体とソフトの両輪に。安定したソフト収益がAI半導体の波を下支えします。直近5年すべてで指数を上回りました。",
+ g:"顧客の懐に深く入る受託設計モデル。ソフトの継続収益がクッションになる。",
+ b:"少数の巨大顧客への依存。VMwareの契約体系変更に対する顧客の反発。"},
+{tk:"PLTR",name:"パランティア",jp:"政府・企業向けAIデータ分析",layer:"届ける",r5:49.4,rows:[null,null,null,-23.0,-65.0,167,340,135],
+ now:"2025年通期の売上は前年比56%増の44億7,500万ドル。米国商業部門は前年同期比137%増と急拡大。",
+ s:"2026年通期の見通しは約61%成長と強気。四半期ごとに予想を上回れるかで株価が大きく動きます。",
+ m:"企業向けAI基盤「AIP」の普及。短期集中の体験研修で導入検討期間を圧縮する独自の売り方が機能しています。",
+ l:"「AIは使いたいが自社データを外部に預けたくない」という政府・大企業の要求に応える設計が参入障壁。防衛・医療・金融に食い込んでいます。",
+ g:"官公庁との長期契約という安定基盤の上に、民間向けが急成長。",
+ b:"10社で最も株価の評価が高く、期待が外れたときの下げが大きい。2022年は−65%。政府予算や政治情勢の影響も受ける。"},
+{tk:"MU",name:"マイクロン",jp:"AI向けメモリ（HBM・DRAM）",layer:"土台",r5:30.7,rows:[-23.0,69.5,39.8,23.9,-46.0,70.7,-1.4,239],
+ now:"2026年3月にクラウドストライクと入れ替わる形でFANG+に新規採用。2026年度第3四半期の売上は前年比346%増の414億ドル、非GAAP粗利率84.9%。",
+ s:"第4四半期の売上見通しは約500億ドル。AIサーバー向けメモリの需給が極端に逼迫し、価格が急騰している局面です。",
+ m:"HBM4の量産と、顧客との複数年の長期供給契約。2026年分の生産能力は完売し、注文は2027〜2028年に及ぶと説明されています。",
+ l:"論点は「メモリは景気循環産業か、構造的な成長産業に変わったのか」。長期契約が過去の激しい価格変動を断ち切れるかどうかです。",
+ g:"供給不足が価格決定力を生んでいる。長期契約で収益の見通しが立てやすくなった。",
+ b:"歴史的にメモリ価格は暴騰と暴落を繰り返してきた。2024年は−1.4%と足踏み。各社の増産投資が需給を崩す可能性。"},
+{tk:"GOOGL",name:"アルファベット",jp:"検索・YouTube・クラウド・Gemini",layer:"場所",r5:29.0,rows:[-0.8,28.2,30.9,65.3,-39.0,58.3,35.5,65.3],
+ now:"2025年通期で年間売上が初めて4,000億ドルを突破。クラウドは第4四半期に前年同期比48%増、営業利益率も17.5%→30.1%へ改善。",
+ s:"クラウドの高成長が続くか。2026年に計画する1,750〜1,850億ドルの設備投資が利益をどれだけ圧迫するか。",
+ m:"自社AI「Gemini」の全製品統合と、アップルへの技術提供。月間利用者7.5億人規模のAIアプリを収益に変えられるか。",
+ l:"最大の論点は「AIが検索を置き換えたとき広告収入はどうなるか」。同社はその答えを自分で用意しようとしています。",
+ g:"検索とYouTubeという圧倒的な収益基盤。研究開発から自社半導体まで垂直に押さえている。",
+ b:"各国の独占禁止法規制。生成AIが検索行動を変えることによる本業への逆風。"},
+{tk:"META",name:"メタ",jp:"Facebook・Instagramの広告",layer:"届ける",r5:19.4,rows:[-26.0,56.6,33.1,23.1,-64.0,194,65.4,12.7],
+ now:"2025年通期で年間売上が初めて2,000億ドルを突破。全アプリ合計の1日あたり利用者は35億8,000万人規模。",
+ s:"2026年に計画する1,150〜1,350億ドルの設備投資に対し、広告収益の伸びが追いつくか。利益率への圧迫が最大の関心事。",
+ m:"AIモデル「Llama」を無償公開する戦略が業界標準の地位につながるか。AIグラスなど新端末が柱になるか。",
+ l:"35億人分の行動データを持つ広告事業は、AIによる精度向上の恩恵を最も直接受けます。自社AIチップ開発まで垂直統合を進行中。",
+ g:"広告という現金製造機を持ちながらAIに投資できる。利用者基盤が桁違いに大きい。",
+ b:"2022年には1年で64%下落した実績があり値動きが荒い。プライバシー規制と、投資回収への疑念。"},
+{tk:"MSFT",name:"マイクロソフト",jp:"クラウドAzureと業務ソフト",layer:"場所",r5:16.7,rows:[18.7,55.3,41.0,51.2,-29.0,56.8,12.1,14.7],
+ now:"2026年度第2四半期の売上は前年同期比17%増の813億ドル。クラウド部門の収益が初めて四半期500億ドルを突破。",
+ s:"Azureの成長率と、AI向け設備投資が利益率をどこまで削るか。投資の回収見通しに市場が神経質になっています。",
+ m:"Windows・Office・GitHubに組み込んだ「Copilot」が実際の追加課金として積み上がるか。",
+ l:"世界中の企業の業務システムが同社製品の上で動いている事実は、10年単位でも簡単には変わりません。景気後退にも比較的強い性格です。",
+ g:"契約型の安定収益。企業向け販売網が圧倒的。AIの商用化を早くから進めてきた。",
+ b:"データセンター投資が先行し、見合う利益が出るかの懸念で株価が反応する場面がある。10社の中では成長率が穏やか。"},
+{tk:"AAPL",name:"アップル",jp:"iPhoneを中心とした端末とサービス",layer:"届ける",r5:15.4,rows:[-6.8,86.2,80.7,33.8,-27.0,48.2,30.1,8.6],
+ now:"2026年度第1四半期のiPhone売上は前年同期比23%増の852億ドル。サービス部門も14%増の300億ドルで過去最高。",
+ s:"高価格帯モデルが利益率を押し上げている局面。買い替えサイクルの強さが続くか。",
+ m:"2026年後半に投入予定の「次世代Siri」。自社AIが出遅れたためGoogleのGeminiを基盤に採用する判断を下しており、巻き返しが分岐点。",
+ l:"端末・OS・サービスを一体設計する仕組みは20年かけて築いたもの。利用者が移りにくく、サービス収入は端末の売れ行きに左右されにくい安定収益です。",
+ g:"下落局面での値下がりが10社の中では相対的に小さい傾向。ブランド力と現金創出力。",
+ b:"AIでは追う立場。中国市場と生産拠点の地政学リスク。App Store手数料への各国規制。"},
+{tk:"NFLX",name:"ネットフリックス",jp:"世界最大の動画配信",layer:"届ける",r5:11.7,rows:[39.4,20.9,67.1,11.4,-51.0,65.1,83.1,5.2],
+ now:"2025年通期の売上は452億ドル（前年比16%増）、営業利益率29.5%、有料会員数は3億2,500万人を突破。",
+ s:"広告付きプランの伸び。2025年の広告売上は15億ドル超で、2026年はさらに倍増を見込んでいます。",
+ m:"スポーツのライブ配信への進出。日本では2026年WBCの全47試合を独占配信。広告収入を伸ばす装置になるかが焦点。",
+ l:"2026年2月にワーナー買収から撤退。高値づかみを避けた判断を市場は好感しました。巨額買収に頼らず自社制作に投資する路線です。",
+ g:"会員数とコンテンツの厚みが参入障壁。収益源が定額課金・広告・ライブへ広がった。",
+ b:"制作費が重い。成長率は以前より落ち着き、8年で指数を上回ったのは2回のみ。"},
+{tk:"AMZN",name:"アマゾン",jp:"EC・クラウドAWS・広告",layer:"場所",r5:7.1,rows:[28.4,23.0,76.3,2.4,-50.0,80.9,44.4,5.2],
+ now:"2025年第4四半期のAWS売上は前年同期比24%増の356億ドルで13四半期ぶりの高い伸び。通年の全社売上は7,169億ドル。",
+ s:"2026年に全社で約2,000億ドルとされる設備投資が、手元資金をどこまで圧迫するか。",
+ m:"生成AIで作り直した「Alexa+」の普及と、自社開発AIチップによる外部依存の低減。",
+ l:"クラウド・物流・広告の3つのインフラを同時に持つ会社は他にありません。利益率の低いEC事業が高利益のクラウドと広告に置き換わる流れが長期テーマです。",
+ g:"AWSは企業のシステムを預かる立場で乗り換えが難しい。広告事業が米国3位まで成長し利益率改善に効いている。",
+ b:"過去8年で指数を上回ったのは1回だけ。設備投資の負担が重く、EC部門は景気と人件費の影響を受けやすい。"}
+];
+const TICKERS=CO.map(c=>c.tk);
+
+const GLOS={
+index:["インデックス（指数）","市場や特定の会社グループの値動きを、ひとつの数字にまとめたもの。日経平均やS&P500と同じ仲間です。"],
+equal:["等ウェイト（均等加重）","10社すべてを同じ比率（10%ずつ）で持つ方式。会社の大きさに関係なく扱うので、規模の小さい会社の値動きも指数に同じだけ響きます。"],
+rebalance:["リバランス","崩れた比率を元に戻す作業。FANG+では3・6・9・12月に全10社を10%ずつへ戻します。値上がりした銘柄を減らし、下がった銘柄を買い増す動きが自動で起きます。"],
+kijun:["基準価額","投資信託の1万口あたりの値段。1日1回、その日の米国市場が閉じたあとに計算され、夜に公表されます。注文の時点では価格がわからない仕組みです。"],
+shintaku:["信託報酬","持っている間、毎日少しずつ資産から差し引かれる運用の手数料。年0.7755%なら100万円あたり年およそ7,755円。基準価額にすでに反映されています。"],
+risk:["リスク（標準偏差）","危険度ではなく「値動きの振れ幅」のこと。24%なら1年のリターンが平均±24%に収まることが多い、という意味です。"],
+log:["対数目盛り","縦軸を金額でなく変化率で刻む方式。100→200と1,000→2,000が同じ高さになります。長期チャートで昔の値動きが潰れて見えるのを防げます。"],
+fukuri:["複利","増えた分にもさらに利益がつく仕組み。期間が長いほど効果が跳ね上がるため、長期投資の中心にある考え方です。"],
+fx:["為替リスク","米国株を円で買うと、株価に加えて為替の変動も成績に乗ります。1ドル150円が130円になれば、株価が動かなくても円換算で約13%減ります。このファンドは為替ヘッジをしていません。"],
+dd:["ドローダウン","過去の最高値からどれだけ下がったかの割合。FANG+は2022年に4割以上下げました。どこまで我慢できるかを先に決めておくと判断がぶれません。"],
+dca:["ドルコスト平均法","毎月同じ金額を買い続ける方法。高いときは少なく、安いときは多く買えるので平均の買値がならされます。下がり続ける局面で損失を防ぐ効果はありません。"],
+nisa:["NISA","運用益に税金がかからない制度。通常は利益に20.315%かかりますがNISA口座ならゼロ。つみたて投資枠が年120万円、成長投資枠が年240万円、生涯1,800万円まで。"]
+};
+
+/* ===================== STORE ===================== */
+const KEY='fangnote.v1';
+let ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,lastQuotes:null,lastAt:''};
+function load(){try{const s=localStorage.getItem(KEY);if(s)ST=Object.assign(ST,JSON.parse(s));}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(ST));}catch(e){}}
+load();
+
+/* ===================== HELPERS ===================== */
+const NS='http://www.w3.org/2000/svg';
+const svgEl=(w,h)=>{const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox',`0 0 ${w} ${h}`);return s;};
+const el=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const txt=(x,y,s,c,an,f)=>{const t=el('text',{x,y,class:c||'tick','text-anchor':an||'middle'});if(f)t.setAttribute('fill',f);t.textContent=s;return t;};
+const yen=n=>'¥'+Math.round(n).toLocaleString('ja-JP');
+const man=n=>{const m=n/10000;return Math.abs(m)>=10000?(m/10000).toFixed(2)+'億円':Math.round(m).toLocaleString('ja-JP')+'万円';};
+const sign=v=>(v>0?'+':'')+v.toFixed(2);
+
+/* ===================== TABS ===================== */
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tabs button').forEach(o=>o.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('p-'+b.dataset.p).classList.add('on');
+  window.scrollTo(0,0);
+});
+
+/* ===================== TERM POPOVER ===================== */
+const pop=document.getElementById('pop');
+document.addEventListener('click',e=>{
+  const b=e.target.closest('.t');
+  if(b&&GLOS[b.dataset.k]){const[t,d]=GLOS[b.dataset.k];popT.textContent=t;popB.textContent=d;pop.classList.add('on');return;}
+  if(!e.target.closest('#pop'))pop.classList.remove('on');
+});
+popX.onclick=()=>pop.classList.remove('on');
+document.getElementById('glos').innerHTML=Object.values(GLOS).map(([t,d])=>`<div><dt>${t}</dt><dd>${d}</dd></div>`).join('');
+
+/* ===================== SETTINGS ===================== */
+const sheet=document.getElementById('setSheet');
+function fillSet(){
+  sKey.value=ST.apiKey||'';sBase.value=ST.base??'';sFx.value=ST.baseFx??'';
+  sUnits.value=ST.units??'';sCost.value=ST.cost??'';
+}
+openSet.onclick=()=>{fillSet();sheet.classList.add('on');};
+closeSet.onclick=()=>sheet.classList.remove('on');
+sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('on');};
+saveSet.onclick=()=>{
+  ST.apiKey=sKey.value.trim();
+  ST.base=sBase.value?+sBase.value:null;
+  ST.baseFx=sFx.value?+sFx.value:ST.baseFx;
+  ST.units=sUnits.value?+sUnits.value:null;
+  ST.cost=sCost.value?+sCost.value:null;
+  if(ST.base)ST.baseAt=new Date().toLocaleDateString('ja-JP');
+  save();sheet.classList.remove('on');renderToday();
+  if(ST.apiKey)loadQuotes();
+};
+clearSet.onclick=()=>{
+  if(confirm('保存した内容をすべて削除します。よろしいですか？')){
+    localStorage.removeItem(KEY);
+    ST={apiKey:'',base:null,baseFx:null,baseAt:'',units:null,cost:null,lastQuotes:null,lastAt:''};
+    fillSet();renderToday();
+  }
+};
+
+/* ===================== MARKET STATUS ===================== */
+function nyNow(){
+  const f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',minute:'numeric',weekday:'short',hour12:false});
+  const p={};f.formatToParts(new Date()).forEach(x=>p[x.type]=x.value);
+  return {h:+p.hour%24,m:+p.minute,wd:p.weekday};
+}
+function marketStatus(){
+  const n=nyNow(),mins=n.h*60+n.m;
+  const weekend=(n.wd==='Sat'||n.wd==='Sun');
+  if(weekend)return{live:false,txt:'米国市場は週末で休みです'};
+  if(mins>=570&&mins<960)return{live:true,txt:'米国市場は取引中（現地 '+String(n.h).padStart(2,'0')+':'+String(n.m).padStart(2,'0')+'）'};
+  if(mins>=240&&mins<570)return{live:false,txt:'時間外（プレマーケット）の時間帯です'};
+  return{live:false,txt:'米国市場は取引時間外です'};
+}
+function renderMarket(){
+  const s=marketStatus();
+  mdot.className='dot'+(s.live?' live':'');mtxt.textContent=s.txt;
+}
+renderMarket();setInterval(renderMarket,60000);
+
+/* ===================== QUOTES ===================== */
+async function fetchFx(){
+  const urls=['https://api.frankfurter.dev/v1/latest?base=USD&symbols=JPY','https://open.er-api.com/v6/latest/USD'];
+  for(const u of urls){
+    try{const r=await fetch(u);const j=await r.json();const v=j.rates&&j.rates.JPY;if(v)return v;}catch(e){}
+  }
+  return null;
+}
+async function loadQuotes(){
+  if(!ST.apiKey){qcap.textContent='株価を取り込むには、右上の⚙からFinnhubのAPIキーを登録してください。';return;}
+  refresh.disabled=true;refresh.textContent='取得中…';
+  try{
+    const res=await Promise.all(TICKERS.map(async t=>{
+      const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${t}&token=${encodeURIComponent(ST.apiKey)}`);
+      if(!r.ok)throw new Error(r.status===401||r.status===403?'APIキーが正しくないようです':'取得に失敗しました（'+r.status+'）');
+      const j=await r.json();return{tk:t,c:j.c,dp:j.dp,pc:j.pc};
+    }));
+    const bad=res.filter(x=>!x.c);
+    if(bad.length===res.length)throw new Error('データが空で返ってきました。APIキーを確認してください。');
+    const fx=await fetchFx();
+    ST.lastQuotes=res;ST.lastFx=fx;ST.lastAt=new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    if(!ST.baseFx&&fx)ST.baseFx=fx;
+    save();renderToday();
+    qcap.textContent=`最終取得 ${ST.lastAt}${fx?`　1ドル＝${fx.toFixed(2)}円`:''}　※無料プランでは15分ほど遅れる場合があります。`;
+  }catch(err){
+    qcap.textContent='エラー：'+err.message;
+  }finally{refresh.disabled=false;refresh.textContent='株価を更新する';}
+}
+refresh.onclick=loadQuotes;
+
+/* ===================== TODAY ===================== */
+function renderToday(){
+  const q=ST.lastQuotes;
+  // quote list
+  if(q){
+    document.getElementById('quotes').innerHTML=q.map(x=>{
+      const co=CO.find(c=>c.tk===x.tk)||{name:''};
+      const cls=x.dp>=0?'up':'dn';
+      return `<div class="q"><span class="tk">${x.tk}</span><span class="nm">${co.name}</span>
+        <span class="px">$${x.c?x.c.toFixed(2):'—'}</span>
+        <span class="dp ${cls}">${x.dp!=null?sign(x.dp)+'%':'—'}</span></div>`;
+    }).join('');
+  }
+  // estimate
+  const box=document.getElementById('estBox');
+  if(!q||!ST.base){
+    box.className='est empty';
+    box.innerHTML=`<div class="lab">今日の基準価額（推定）</div>
+      <div class="big">${!ST.base?'右上の⚙で「最後に確認した基準価額」を入れてください':'⚙でAPIキーを登録し、株価を更新してください'}</div>
+      <div class="note" style="border-color:var(--rule2);color:var(--ink3)">証券会社アプリの基準価額を1つ入れるだけで、10社の値動きから次の値を推定します。</div>`;
+    renderHold(null);return;
+  }
+  const dps=q.filter(x=>x.dp!=null).map(x=>x.dp);
+  const avg=dps.reduce((a,b)=>a+b,0)/dps.length;
+  const fxNow=ST.lastFx,fxBase=ST.baseFx;
+  const fxChg=(fxNow&&fxBase)?(fxNow/fxBase-1)*100:0;
+  const total=(1+avg/100)*(1+fxChg/100)-1;
+  const est=ST.base*(1+total);
+  const up=total>=0;
+  box.className='est';
+  box.innerHTML=`<div class="lab">次に公表される基準価額（推定）</div>
+    <div class="big">${Math.round(est).toLocaleString('ja-JP')}<span style="font-size:18px"> 円</span></div>
+    <div class="chg">${sign(total*100)}%（${up?'+':''}${Math.round(est-ST.base).toLocaleString('ja-JP')}円）</div>
+    <div class="note">10社の平均騰落 ${sign(avg)}%${fxChg?` ／ 為替 ${sign(fxChg)}%`:' ／ 為替は変化なしとして計算'}<br>
+    起点：${ST.base.toLocaleString('ja-JP')}円（${ST.baseAt||'登録日不明'}）　目安であり、公表値とはずれます</div>`;
+  renderHold(est);
+}
+function renderHold(est){
+  const box=document.getElementById('holdBox');
+  if(!ST.units||!est){box.style.display='none';return;}
+  box.style.display='';
+  const val=est*ST.units/10000;
+  const pl=ST.cost?val-ST.cost:null;
+  box.innerHTML=`<div><span>推定評価額</span><b>${yen(val)}</b></div>
+    <div><span>${ST.cost?'損益（推定）':'保有口数'}</span><b style="color:${pl==null?'var(--ink)':(pl>=0?'var(--gain)':'var(--loss)')}">${
+      pl==null?ST.units.toLocaleString('ja-JP')+'口':(pl>=0?'+':'')+yen(pl)}</b></div>`;
+}
+
+/* ===================== COMPANIES ===================== */
+document.getElementById('companies').innerHTML=CO.map(c=>`
+<details class="co"><summary>
+  <span class="tk">${c.tk}<small>${c.layer}</small></span>
+  <span class="nm">${c.name}<em>${c.jp}</em></span>
+  <span class="r5" style="color:${c.r5>=20.2?'var(--gain)':'var(--ink2)'}">+${c.r5}%<small>5年平均</small></span>
+</summary><div class="cob">
+  <p style="margin:12px 0 0">${c.now}</p>
+  <div class="hz"><h5>短期（〜1年）</h5><p>${c.s}</p></div>
+  <div class="hz"><h5>中期（2〜3年）</h5><p>${c.m}</p></div>
+  <div class="hz"><h5>長期（5〜10年）</h5><p>${c.l}</p></div>
+  <div class="bx g"><h6>強み</h6>${c.g}</div>
+  <div class="bx b"><h6>弱み・リスク</h6>${c.b}</div>
+</div></details>`).join('');
+
+/* ===================== HEATMAP ===================== */
+(function(){
+  const col=v=>{if(v===null)return'background:#F1F3F2;color:#B9C0BE';
+    const a=Math.min(1,Math.abs(v)/120);
+    return v>=0?`background:rgba(37,121,92,${a*.55});color:${a>.5?'#fff':'#123'}`
+               :`background:rgba(179,68,55,${a*.6});color:${a>.5?'#fff':'#123'}`;};
+  let h='<thead><tr><th>銘柄</th>'+YEARS.map(y=>`<th>${y}</th>`).join('')+'<th>5年平均</th></tr></thead><tbody>';
+  CO.forEach(c=>{h+=`<tr><td>${c.tk}</td>`+c.rows.map(v=>`<td style="${col(v)}">${v===null?'—':(v>0?'+':'')+v}</td>`).join('')+`<td style="font-weight:700">+${c.r5}</td></tr>`;});
+  h+='<tr class="idx"><td>FANG+</td>'+IDX.map(v=>`<td>${(v>0?'+':'')+v}</td>`).join('')+'<td>+20.2</td></tr>';
+  document.getElementById('heat').innerHTML=h+'</tbody>';
+})();
+
+/* ===================== HERO BARS ===================== */
+(function(){
+  const W=640,H=250,P={t:30,r:8,b:28,l:36},s=svgEl(W,H);
+  const y=v=>P.t+(110-v)/160*(H-P.t-P.b),bw=(W-P.l-P.r)/8;
+  [100,50,0,-50].forEach(v=>{s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(v),y2:y(v),class:v?'grid':'zero'}));
+    s.appendChild(txt(P.l-6,y(v)+3.5,v+'%','tick','end'));});
+  YEARS.forEach((yr,i)=>{
+    const v=IDX[i],x=P.l+bw*i+bw*.2,w=bw*.6,top=v>=0?y(v):y(0),h=Math.max(2,Math.abs(y(v)-y(0)));
+    s.appendChild(el('rect',{x,y:top,width:w,height:h,fill:v>=0?'#25795C':'#B34437'}));
+    s.appendChild(txt(x+w/2,v>=0?top-6:top+h+13,(v>0?'+':'')+v,'tick','middle',v>=0?'#25795C':'#B34437'));
+    s.appendChild(txt(x+w/2,H-8,String(yr).slice(2)+'年','tick'));
+  });
+  document.getElementById('heroChart').appendChild(s);
+})();
+
+/* ===================== GROWTH ===================== */
+const growth=(()=>{const a=[100];IDX.forEach(r=>a.push(a[a.length-1]*(1+r/100)));return a;})();
+const gY=[2017,...YEARS];let gMode='linear';
+function drawGrowth(){
+  const host=document.getElementById('growthChart');host.innerHTML='';
+  const W=640,H=280,P={t:16,r:10,b:26,l:46},s=svgEl(W,H);
+  const x=i=>P.l+i*(W-P.l-P.r)/(gY.length-1);
+  if(gMode==='dd'){
+    let pk=0;const dd=growth.map(v=>{pk=Math.max(pk,v);return(v/pk-1)*100;});
+    const y=v=>P.t+(0-v)/50*(H-P.t-P.b);
+    [0,-10,-20,-30,-40,-50].forEach(v=>{s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(v),y2:y(v),class:v?'grid':'zero'}));
+      s.appendChild(txt(P.l-6,y(v)+3.5,v+'%','tick','end'));});
+    let d=`M ${x(0)} ${y(0)}`;dd.forEach((v,i)=>d+=` L ${x(i)} ${y(Math.max(v,-50))}`);
+    s.appendChild(el('path',{d:d+` L ${x(dd.length-1)} ${y(0)} Z`,fill:'#B3443722'}));
+    s.appendChild(el('path',{d,fill:'none',stroke:'#B34437','stroke-width':2}));
+    gCap.textContent='各年末に、それまでの最高値から何%下がっていたか。2022年末は約42%下。回復に1年かかりました。';
+  }else{
+    const useLog=gMode==='log',vmax=Math.max(...growth),vmin=90;
+    const sc=v=>useLog?(Math.log(v)-Math.log(vmin))/(Math.log(vmax*1.08)-Math.log(vmin)):v/(vmax*1.08);
+    const y=v=>P.t+(1-sc(v))*(H-P.t-P.b);
+    (useLog?[100,200,400,700]:[0,200,400,600]).forEach(v=>{
+      const vv=v||vmin;if(useLog&&v<vmin)return;
+      s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(vv),y2:y(vv),class:'grid'}));
+      s.appendChild(txt(P.l-6,y(vv)+3.5,v,'tick','end'));});
+    let d='';growth.forEach((v,i)=>d+=(i?' L ':'M ')+x(i)+' '+y(v));
+    s.appendChild(el('path',{d:d+` L ${x(growth.length-1)} ${H-P.b} L ${x(0)} ${H-P.b} Z`,fill:'#0F4E4514'}));
+    s.appendChild(el('path',{d,fill:'none',stroke:'#0F4E45','stroke-width':2.2}));
+    growth.forEach((v,i)=>{s.appendChild(el('circle',{cx:x(i),cy:y(v),r:2.8,fill:'#0F4E45'}));
+      if(i%2===0||i===8)s.appendChild(txt(x(i),y(v)-9,Math.round(v),'tick','middle','#0F4E45'));});
+    gCap.textContent=useLog?'対数目盛り。傾きが同じなら同じ成長率。2020年の急騰と2022年の急落を公平に比べられます。'
+      :'2017年末に100だった指数は2025年末におよそ705。8年で約7倍ですが、2022年に一度4割以上を失っています。';
+  }
+  gY.forEach((yr,i)=>{if(i%2===0)s.appendChild(txt(x(i),H-7,String(yr).slice(2)+'年','tick'));});
+  host.appendChild(s);
+}
+document.querySelectorAll('#gSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#gSeg button').forEach(o=>o.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');gMode=b.dataset.g;drawGrowth();});
+drawGrowth();
+
+/* ===================== SIMULATOR ===================== */
+const S={init:0,mon:30000,yrs:10,ret:10,fx:0,crash:0,acct:'nisa'};
+function runSim(pct){
+  const net=(pct+S.fx-FEE)/100,m=Math.pow(1+net,1/12)-1,N=S.yrs*12,cm=Math.floor(N/2);
+  let v=S.init,pr=S.init;const pts=[{v,pr}];
+  for(let i=1;i<=N;i++){v=v*(1+m)+S.mon;pr+=S.mon;if(S.crash&&i===cm)v*=(1+S.crash/100);if(i%12===0)pts.push({v,pr});}
+  return{pts,v,pr};
+}
+function drawSim(){
+  const b=runSim(S.ret),lo=runSim(S.ret-10),hi=runSim(S.ret+10);
+  const gross=b.v-b.pr,tax=S.acct==='tax'&&gross>0?gross*.20315:0;
+  rPrin.textContent=man(b.pr);rVal.textContent=man(b.v-tax);
+  rGain.textContent=(gross-tax>=0?'+':'')+man(gross-tax);
+  rMul.textContent=b.pr>0?(b.v/b.pr).toFixed(2)+'倍':'—';
+  simCap.textContent=`年率${S.ret}%${S.fx?`（為替${S.fx>0?'+':''}${S.fx}%）`:''}から信託報酬0.7755%を引いた実質${(S.ret+S.fx-FEE).toFixed(2)}%で計算。`
+    +(S.crash?`${Math.floor(S.yrs/2)}年目に${S.crash}%の暴落を1回はさんでいます。`:'')
+    +(S.acct==='tax'?`利益に20.315%（${man(tax)}）の税を引いた額です。`:'NISAを想定し税は引いていません。')
+    +'　薄い帯は年率が±10%ぶれた場合の幅。';
+  const host=document.getElementById('simChart');host.innerHTML='';
+  const W=640,H=250,P={t:12,r:8,b:24,l:52},s=svgEl(W,H);
+  const vmax=Math.max(hi.v,b.v)*1.06,x=i=>P.l+i*(W-P.l-P.r)/S.yrs,y=v=>P.t+(1-v/vmax)*(H-P.t-P.b);
+  for(let k=0;k<=4;k++){const v=vmax*k/4;
+    s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(v),y2:y(v),class:'grid'}));
+    s.appendChild(txt(P.l-6,y(v)+3.5,v>=1e8?(v/1e8).toFixed(1)+'億':Math.round(v/1e4).toLocaleString('ja-JP')+'万','tick','end'));}
+  let bd=`M ${x(0)} ${y(hi.pts[0].v)}`;hi.pts.forEach((p,i)=>bd+=` L ${x(i)} ${y(p.v)}`);
+  for(let i=lo.pts.length-1;i>=0;i--)bd+=` L ${x(i)} ${y(lo.pts[i].v)}`;
+  s.appendChild(el('path',{d:bd+' Z',fill:'#9FC4B840'}));
+  let dp='',dv='';b.pts.forEach((p,i)=>{dp+=(i?' L ':'M ')+x(i)+' '+y(p.pr);dv+=(i?' L ':'M ')+x(i)+' '+y(p.v);});
+  s.appendChild(el('path',{d:dp,fill:'none',stroke:'#8B9491','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+  s.appendChild(el('path',{d:dv,fill:'none',stroke:'#0F4E45','stroke-width':2.4}));
+  s.appendChild(el('circle',{cx:x(S.yrs),cy:y(b.v),r:3.5,fill:'#0F4E45'}));
+  const st=S.yrs<=12?2:Math.ceil(S.yrs/6);
+  for(let i=0;i<=S.yrs;i+=st)s.appendChild(txt(x(i),H-6,i+'年','tick'));
+  host.appendChild(s);
+}
+[['init','init',1e4,'initV'],['mon','mon',1e4,'monV'],['yrs','yrs',1,'yrsV']].forEach(([id,k,mul,vid])=>{
+  const r=document.getElementById(id);
+  r.oninput=()=>{S[k]=+r.value*mul;document.getElementById(vid).textContent=r.value;drawSim();};
+});
+[['scen','r','ret',Number],['fxp','f','fx',Number],['crashp','c','crash',Number],['acctp','a','acct',String]].forEach(([id,at,k,cast])=>{
+  const g=document.getElementById(id);
+  g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    g.querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed','false'));
+    b.setAttribute('aria-pressed','true');S[k]=cast(b.dataset[at]);drawSim();});
+});
+drawSim();
+
+/* ===================== BACKTEST ===================== */
+let bAmt=30000;
+function drawBack(){
+  const mm=[];IDX.forEach(r=>{const m=Math.pow(1+(r-FEE)/100,1/12)-1;for(let i=0;i<12;i++)mm.push(m);});
+  let v=0,pr=0;const pts=[{v:0,pr:0}];
+  mm.forEach((m,i)=>{v=v*(1+m)+bAmt;pr+=bAmt;if((i+1)%3===0)pts.push({v,pr});});
+  let v2=0,p2=0;for(let i=0;i<60;i++){v2=v2*(1+mm[i])+bAmt;p2+=bAmt;}
+  bPrin.textContent=man(pr);bVal.textContent=man(v);bMul.textContent=(v/pr).toFixed(2)+'倍';
+  bDD.textContent=man(v2-p2)+'（'+((v2/p2-1)*100).toFixed(1)+'%）';
+  const host=document.getElementById('backChart');host.innerHTML='';
+  const W=640,H=250,P={t:14,r:8,b:24,l:52},s=svgEl(W,H);
+  const vmax=Math.max(v,pr)*1.08,x=i=>P.l+i*(W-P.l-P.r)/(pts.length-1),y=q=>P.t+(1-q/vmax)*(H-P.t-P.b);
+  for(let k=0;k<=4;k++){const q=vmax*k/4;
+    s.appendChild(el('line',{x1:P.l,x2:W-P.r,y1:y(q),y2:y(q),class:'grid'}));
+    s.appendChild(txt(P.l-6,y(q)+3.5,Math.round(q/1e4).toLocaleString('ja-JP')+'万','tick','end'));}
+  let dp='',dv='';pts.forEach((p,i)=>{dp+=(i?' L ':'M ')+x(i)+' '+y(p.pr);dv+=(i?' L ':'M ')+x(i)+' '+y(p.v);});
+  s.appendChild(el('path',{d:dv+` L ${x(pts.length-1)} ${H-P.b} L ${x(0)} ${H-P.b} Z`,fill:'#0F4E4512'}));
+  s.appendChild(el('path',{d:dp,fill:'none',stroke:'#8B9491','stroke-width':1.5,'stroke-dasharray':'5 4'}));
+  s.appendChild(el('path',{d:dv,fill:'none',stroke:'#0F4E45','stroke-width':2.4}));
+  s.appendChild(el('line',{x1:x(20),x2:x(20),y1:P.t,y2:H-P.b,stroke:'#B34437','stroke-width':1,'stroke-dasharray':'3 3'}));
+  s.appendChild(txt(x(20),P.t-2,'22年末','tick','middle','#B34437'));
+  s.appendChild(txt(x(0),H-6,'18年初','tick','start'));
+  YEARS.forEach((yr,i)=>{if(i%2===1)s.appendChild(txt(x((i+1)*4),H-6,String(yr).slice(2)+'末','tick'));});
+  host.appendChild(s);
+}
+document.querySelectorAll('#bAmtSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#bAmtSeg button').forEach(o=>o.setAttribute('aria-pressed','false'));
+  b.setAttribute('aria-pressed','true');bAmt=+b.dataset.a;drawBack();});
+drawBack();
+
+/* ===================== INIT ===================== */
+renderToday();
+if(ST.apiKey&&(!ST.lastQuotes))loadQuotes();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
