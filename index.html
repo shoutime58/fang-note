@@ -89,9 +89,10 @@ h2.sec:first-child{margin-top:0}
 .t{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;border-bottom:1px dashed var(--mark)}
 .t::after{content:"?";font-size:9px;vertical-align:super;color:var(--mark);margin-left:1px;font-weight:700}
 #pop{position:fixed;left:12px;right:12px;bottom:calc(70px + var(--safeB));background:var(--ink);color:#F3F6F5;
-  padding:18px 20px;z-index:60;transform:translateY(180%);transition:transform .22s ease;
-  box-shadow:0 20px 50px -20px rgba(0,0,0,.7);max-width:616px;margin:0 auto}
-#pop.on{transform:translateY(0)}
+  padding:18px 20px;z-index:60;box-shadow:0 20px 50px -20px rgba(0,0,0,.7);max-width:616px;margin:0 auto;
+  visibility:hidden;opacity:0;pointer-events:none;transform:translateY(16px);
+  transition:opacity .2s ease,transform .2s ease,visibility .2s}
+#pop.on{visibility:visible;opacity:1;pointer-events:auto;transform:translateY(0)}
 #pop h4{font-size:16px;color:#fff;margin-bottom:5px}
 #pop p{font-size:13.5px;line-height:1.75;color:#C9D3D0;margin:0}
 #pop .x{position:absolute;top:8px;right:10px;background:none;border:0;color:#7E8B88;font-size:22px;cursor:pointer}
@@ -187,6 +188,8 @@ ol.rules p{font-size:13px;color:var(--ink2);margin:0}
 
   <div class="mstat"><span class="dot" id="mdot"></span><span id="mtxt">米国市場の状況を確認中</span></div>
   <button class="btn" id="refresh">株価を更新する</button>
+  <div id="qhead" hidden style="font-size:11px;color:var(--ink3);display:flex;justify-content:space-between;padding:0 2px 5px">
+    <span>構成10社</span><span>株価　／　前日終値比</span></div>
   <div id="quotes"></div>
   <p class="cap" id="qcap">「株価を更新する」を押すと、10社の最新値を取り込みます。無料プランでは15分ほど遅れる場合があります。</p>
 
@@ -526,7 +529,7 @@ async function loadQuotes(){
     ST.lastQuotes=res;ST.lastFx=fx;ST.lastAt=new Date().toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
     if(!ST.baseFx&&fx)ST.baseFx=fx;
     save();renderToday();
-    qcap.textContent=`最終取得 ${ST.lastAt}${fx?`　1ドル＝${fx.toFixed(2)}円`:''}　※無料プランでは15分ほど遅れる場合があります。`;
+    qcap.textContent=`最終取得 ${ST.lastAt}${fx?`　1ドル＝${fx.toFixed(2)}円`:''}　※%は前日の終値と比べた変化です。無料プランでは15分ほど遅れる場合があります。`;
   }catch(err){
     qcap.textContent='エラー：'+err.message;
   }finally{refresh.disabled=false;refresh.textContent='株価を更新する';}
@@ -537,7 +540,9 @@ refresh.onclick=loadQuotes;
 function renderToday(){
   const q=ST.lastQuotes;
   // quote list
+  document.getElementById('qhead').hidden=!q;
   if(q){
+    if(ST.lastAt)qcap.textContent=`最終取得 ${ST.lastAt}${ST.lastFx?`　1ドル＝${(+ST.lastFx).toFixed(2)}円`:''}　※%は前日の終値と比べた変化です。無料プランでは15分ほど遅れる場合があります。`;
     document.getElementById('quotes').innerHTML=q.map(x=>{
       const co=CO.find(c=>c.tk===x.tk)||{name:''};
       const cls=x.dp>=0?'up':'dn';
@@ -566,7 +571,7 @@ function renderToday(){
   box.innerHTML=`<div class="lab">次に公表される基準価額（推定）</div>
     <div class="big">${Math.round(est).toLocaleString('ja-JP')}<span style="font-size:18px"> 円</span></div>
     <div class="chg">${sign(total*100)}%（${up?'+':''}${Math.round(est-ST.base).toLocaleString('ja-JP')}円）</div>
-    <div class="note">10社の平均騰落 ${sign(avg)}%${fxChg?` ／ 為替 ${sign(fxChg)}%`:' ／ 為替は変化なしとして計算'}<br>
+    <div class="note">10社の平均騰落（前日終値比） ${sign(avg)}%${fxChg?` ／ 為替 ${sign(fxChg)}%`:' ／ 為替は変化なしとして計算'}<br>
     起点：${ST.base.toLocaleString('ja-JP')}円（${ST.baseAt||'登録日不明'}）　目安であり、公表値とはずれます</div>`;
   renderHold(est);
 }
